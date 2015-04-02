@@ -20,15 +20,19 @@ export function resolve(files, options) {
 }
 
 export function build(code, options) {
+  let opts = {
+    _evilES3SafeReExports: true,
+    strict: false,
+    name: 'lodash',
+    amdName: 'lodash'
+  };
   switch (options.outFormat) {
     case 'cjs':
-      return esperanto.toCjs(code, {strict: true});
+      return esperanto.toCjs(code, opts);
     case 'amd':
-      return esperanto.toAmd(code, {strict: true});
+      return esperanto.toAmd(code, opts);
     case 'umd':
-      return esperanto.toUmd(code, {
-        name: 'lodash', strict: true
-      });
+      return esperanto.toUmd(code, opts);
     case 'es6':
       return {code};
   }
@@ -56,7 +60,7 @@ function modularize(fileGlob, options) {
           }
           return {
             name,
-            path: path.join(options.lodash, category, name)
+            path: path.join(options.lodashPath, category, name)
           };
         });
 

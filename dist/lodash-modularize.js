@@ -42,15 +42,19 @@ function resolve(files, options) {
 }
 
 function build(code, options) {
+  var opts = {
+    _evilES3SafeReExports: true,
+    strict: false,
+    name: "lodash",
+    amdName: "lodash"
+  };
   switch (options.outFormat) {
     case "cjs":
-      return esperanto.toCjs(code, { strict: true });
+      return esperanto.toCjs(code, opts);
     case "amd":
-      return esperanto.toAmd(code, { strict: true });
+      return esperanto.toAmd(code, opts);
     case "umd":
-      return esperanto.toUmd(code, {
-        name: "lodash", strict: true
-      });
+      return esperanto.toUmd(code, opts);
     case "es6":
       return { code: code };
   }
@@ -79,7 +83,7 @@ function modularize(fileGlob, options) {
           }
           return {
             name: name,
-            path: path.join(options.lodash, category, name)
+            path: path.join(options.lodashPath, category, name)
           };
         });
 
