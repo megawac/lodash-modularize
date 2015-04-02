@@ -38,8 +38,10 @@ export function findModules({imports, scope}) {
 export default function(code, options) {
   // let varName = lodash.result(options, 'varName', '_');
   let ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, 'acorn')));
-
   let result = [];
+
+  // imports to consider lodash (e.g. lodash-compact, lodash, etc)
+  let lodashOptions = [options.lodash, options.outfile];
 
   lodash(umd(ast, {
       amd: false,
@@ -48,7 +50,7 @@ export default function(code, options) {
     }))
     .filter(node => {
       // consider adding lodash-fp & others
-      return includes(['lodash', options.outfile], node.source.value);
+      return includes(lodashOptions, node.source.value);
     })
     .each(node => {
       // Add direct specifiers (`import {map, pick} from 'lodash'`)

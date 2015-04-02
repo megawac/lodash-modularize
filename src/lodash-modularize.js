@@ -7,8 +7,9 @@ import {flatten, includes, isArray, uniq, template} from 'lodash';
 import Promise from 'bluebird';
 const glob = Promise.promisify(require('glob'));
 
-const templatePromise = fs.readFileAsync(path.join(__dirname, '../templates/import-build.tpl'))
-  .then(templateStr => template(templateStr));
+import esperanto from 'esperanto';
+const tplPath = path.join(__dirname, '../templates/import-build.tpl');
+const buildTemplate = template(fs.readFileSync(tplPath));
 
 export function resolve(files, options) {
   return Promise.map(files,
@@ -18,12 +19,28 @@ export function resolve(files, options) {
       });
 }
 
+export function build(code, options) {
+  switch (options.outFormat) {
+    case 'cjs':
+      return esperanto.toCjs(code, {strict: true});
+    case 'amd':
+      return esperanto.toAmd(code, {strict: true});
+    case 'umd':
+      return esperanto.toUmd(code, {
+        name: 'lodash', strict: true
+      });
+    case 'es6':
+      return {code};
+  }
+  throw `Unsupported format: ${options.outFormat}`;
+}
+
 function modularize(fileGlob, options) {
   let files = (isArray(fileGlob) ? Promise.resolve(fileGlob) : glob(fileGlob))
     .then(files => resolve(files, options));
 
-  return Promise.all([files, lodashModules, templatePromise])
-    .spread((methods, modules, template) => {
+  return Promise.all([files, lodashModules])
+    .spread((methods, modules) => {
       // What to do with the resulting methods (e.g. export, list, etc)
       if (options.list) {
         return methods;
@@ -42,7 +59,14 @@ function modularize(fileGlob, options) {
             path: path.join(options.lodash, category, name)
           };
         });
-        console.log(template({config}));
+
+        let {code} = build(buildTemplate({config}), options);
+
+        if (options.outfile) {
+          return fs.writeFile(options.outfile, code)
+            .then(() => code);
+        }
+        return code;
       }
     });
 }

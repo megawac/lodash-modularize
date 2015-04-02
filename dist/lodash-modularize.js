@@ -1,6 +1,7 @@
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
 exports.resolve = resolve;
+exports.build = build;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -25,9 +26,10 @@ var Promise = _interopRequire(require("bluebird"));
 
 var glob = Promise.promisify(require("glob"));
 
-var templatePromise = fs.readFileAsync(path.join(__dirname, "../templates/import-build.tpl")).then(function (templateStr) {
-  return template(templateStr);
-});
+var esperanto = _interopRequire(require("esperanto"));
+
+var tplPath = path.join(__dirname, "../templates/import-build.tpl");
+var buildTemplate = template(fs.readFileSync(tplPath));
 
 function resolve(files, options) {
   return Promise.map(files, function (file) {
@@ -39,29 +41,64 @@ function resolve(files, options) {
   });
 }
 
+function build(code, options) {
+  switch (options.outFormat) {
+    case "cjs":
+      return esperanto.toCjs(code, { strict: true });
+    case "amd":
+      return esperanto.toAmd(code, { strict: true });
+    case "umd":
+      return esperanto.toUmd(code, {
+        name: "lodash", strict: true
+      });
+    case "es6":
+      return { code: code };
+  }
+  throw "Unsupported format: " + options.outFormat;
+}
+
 function modularize(fileGlob, options) {
   var files = (isArray(fileGlob) ? Promise.resolve(fileGlob) : glob(fileGlob)).then(function (files) {
     return resolve(files, options);
   });
 
-  return Promise.all([files, lodashModules, templatePromise]).spread(function (methods, modules, template) {
+  return Promise.all([files, lodashModules]).spread(function (methods, modules) {
     // What to do with the resulting methods (e.g. export, list, etc)
     if (options.list) {
       return methods;
     } else if (options.compile) {} else {
-      // Otherwise compile a file for them to the modularization
-      var config = methods.map(function (name) {
-        for (var category in modules) {
-          if (includes(modules[category], name)) {
-            break;
+      var _build;
+
+      var _ret = (function () {
+        // Otherwise compile a file for them to the modularization
+        var config = methods.map(function (name) {
+          for (var category in modules) {
+            if (includes(modules[category], name)) {
+              break;
+            }
           }
+          return {
+            name: name,
+            path: path.join(options.lodash, category, name)
+          };
+        });
+
+        _build = build(buildTemplate({ config: config }), options);
+        var code = _build.code;
+
+        if (options.outfile) {
+          return {
+            v: fs.writeFile(options.outfile, code).then(function () {
+              return code;
+            })
+          };
         }
         return {
-          name: name,
-          path: path.join(options.lodash, category, name)
+          v: code
         };
-      });
-      console.log(template({ config: config }));
+      })();
+
+      if (typeof _ret === "object") return _ret.v;
     }
   });
 }

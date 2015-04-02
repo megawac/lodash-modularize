@@ -16,6 +16,9 @@ var argv = require('yargs')
   .nargs('f', 1)
   .describe('format', 'modular format to export (es6,amd,cjs)')
 
+  .default('out-format', 'umd')
+  .describe('out-format', 'module format to export (es6,umd,cjs,amd)')
+
   .default('lodash', 'lodash')
   .describe('lodash', 'The path to search and use for lodash (e.g. lodash-compat)')
   
@@ -47,6 +50,8 @@ modularize(argv._, argv)
     if (argv.list) {
       console.log(result.sort().join(','));
       return;
+    } else if (!argv.outfile) {
+      console.log(result);
     }
   })
   .catch(function(error) {

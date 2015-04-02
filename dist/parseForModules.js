@@ -59,8 +59,10 @@ function findModules(_ref) {
 exports["default"] = function (code, options) {
   // let varName = lodash.result(options, 'varName', '_');
   var ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, "acorn")));
-
   var result = [];
+
+  // imports to consider lodash (e.g. lodash-compact, lodash, etc)
+  var lodashOptions = [options.lodash, options.outfile];
 
   lodash(umd(ast, {
     amd: false,
@@ -68,7 +70,7 @@ exports["default"] = function (code, options) {
     es6: includes(options.format, "es6")
   })).filter(function (node) {
     // consider adding lodash-fp & others
-    return includes(["lodash", options.outfile], node.source.value);
+    return includes(lodashOptions, node.source.value);
   }).each(function (node) {
     // Add direct specifiers (`import {map, pick} from 'lodash'`)
     lodash(node.specifiers).map("imported").compact().each(function (requireNode) {
