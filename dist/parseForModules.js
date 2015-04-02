@@ -36,7 +36,7 @@ function findModules(_ref) {
   var scope = _ref.scope;
 
   var result = [];
-  estraverse.traverse(scope.block, {
+  estraverse.traverse(scope, {
     enter: function enter(node) {
       switch (node.type) {
         case "MemberExpression":
@@ -64,8 +64,8 @@ exports["default"] = function (code, options) {
 
   lodash(umd(ast, {
     amd: false,
-    cjs: true,
-    es6: true
+    cjs: includes(options.format, "cjs"),
+    es6: includes(options.format, "es6")
   })).filter(function (node) {
     // consider adding lodash-fp & others
     return includes(["lodash", options.outfile], node.source.value);
@@ -81,11 +81,18 @@ exports["default"] = function (code, options) {
       imports: reject(node.specifiers, "imported").map(function (x) {
         return x.local.name;
       }),
-      scope: node.scope
+      scope: node.scope.block
     };
   }).each(function (node) {
     result.push.apply(result, _toConsumableArray(findModules(node)));
   }).value();
+
+  if (typeof options.global === "string") {
+    result.push.apply(result, _toConsumableArray(findModules({
+      imports: [options.global],
+      scope: ast
+    })));
+  }
 
   return result;
 };

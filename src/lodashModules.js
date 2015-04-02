@@ -17,5 +17,4 @@ export default getDirectories(lodashPath).then(modules => {
     return fs.readdirAsync(path.join(lodashPath, val)).map(name => name.slice(0, -3));
   });
 })
-.then(functions => zipObject(m, functions))
-.catch(console.error);
+.then(functions => zipObject(m, functions));

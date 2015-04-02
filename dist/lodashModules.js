@@ -28,4 +28,4 @@ module.exports = getDirectories(lodashPath).then(function (modules) {
   });
 }).then(function (functions) {
   return zipObject(m, functions);
-})["catch"](console.error);
+});

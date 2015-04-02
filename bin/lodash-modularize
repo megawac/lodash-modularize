@@ -11,11 +11,16 @@ var argv = require('yargs')
   .describe('outfile', 'file to generate')
 
 
-  .default('format', 'cjs')
+  .array('format')
+  .default('format', ['cjs', 'es6'])
   .alias('f', 'format')
   .nargs('f', 1)
   .describe('format', 'modular format to export (es6,amd,cjs)')
   
+  .default('global', null)
+  .alias('g', 'global')
+  .nargs('g', 1)
+  .describe('global', 'Global lodash variable (e.g. _ or lodash)')
 
   .boolean('compile')
   .alias('compile', ['c'])
@@ -27,6 +32,10 @@ var argv = require('yargs')
   .argv;
 
 var modularize = require('..');
+
+// Work around yargs not doing it for us
+argv.format = argv.f = argv.f.join(',').split(',');
+console.log(argv);
 
 modularize(argv._, argv)
   .catch(function(error) {

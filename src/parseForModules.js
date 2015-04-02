@@ -16,7 +16,7 @@ const acornOptions = {
 
 export function findModules({imports, scope}) {
   let result = [];
-  estraverse.traverse(scope.block, {
+  estraverse.traverse(scope, {
     enter(node) {
       switch (node.type) {
         case 'MemberExpression':
@@ -43,8 +43,8 @@ export default function(code, options) {
 
   lodash(umd(ast, {
       amd: false,
-      cjs: true,
-      es6: true
+      cjs: includes(options.format, 'cjs'),
+      es6: includes(options.format, 'es6')
     }))
     .filter(node => {
       // consider adding lodash-fp & others
@@ -64,12 +64,19 @@ export default function(code, options) {
       return {
         imports: reject(node.specifiers, 'imported')
                   .map(x => x.local.name),
-        scope: node.scope
+        scope: node.scope.block
       };
     })
     .each(node => {
       result.push(...findModules(node));
     }).value();
+
+  if (typeof options.global === 'string') {
+    result.push(...findModules({
+      imports: [options.global],
+      scope: ast
+    }));
+  }
 
   return result;
 }
