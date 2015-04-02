@@ -10,12 +10,14 @@ var argv = require('yargs')
   .nargs('o', 1)
   .describe('outfile', 'file to generate')
 
-
   .array('format')
   .default('format', ['cjs', 'es6'])
   .alias('f', 'format')
   .nargs('f', 1)
   .describe('format', 'modular format to export (es6,amd,cjs)')
+
+  .default('lodash', 'lodash')
+  .describe('lodash', 'The path to search and use for lodash (e.g. lodash-compat)')
   
   .default('global', null)
   .alias('g', 'global')
@@ -25,6 +27,9 @@ var argv = require('yargs')
   .boolean('compile')
   .alias('compile', ['c'])
   .describe('compile', 'Whether to compile the results like lodash cli')
+
+  .boolean('list')
+  .describe('list', 'List the use lodash modules instead of building a file')
 
   .version(function() {
     return require('../package').version;
@@ -38,6 +43,12 @@ argv.format = argv.f = argv.f.join(',').split(',');
 console.log(argv);
 
 modularize(argv._, argv)
+  .then(function(result) {
+    if (argv.list) {
+      console.log(result.sort().join(','));
+      return;
+    }
+  })
   .catch(function(error) {
     console.error(error);
     process.exit(1);
