@@ -28,5 +28,9 @@ var argv = require('yargs')
 
 var modularize = require('..');
 
-modularize(argv._);
+modularize(argv._, argv)
+  .catch(function(error) {
+    console.error(error);
+    process.exit(1);
+  });
 

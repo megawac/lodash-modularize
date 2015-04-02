@@ -1,10 +1,12 @@
-import acorn from 'acorn';
+import {parse} from 'acorn';
 import umd from 'acorn-umd';
-
-import lodash from 'lodash';
+import estraverse from 'estraverse';
+import lodash, {includes, reject} from 'lodash';
 
 const acornOptions = {
   ecmaVersion: 6,
+
+  sourceType: 'module',
 
   // Be super loose (as who cares for this purpose)
   allowImportExportEverywhere: true,
@@ -12,36 +14,62 @@ const acornOptions = {
   allowHashBang: true
 };
 
-export default function(code, options) {
-  let varName = lodash.result(options, 'varName', '_');
-  let ast = acorn.parse(code, lodash.assign({}, acornOptions, lodash.result(options, 'acorn')));
-  let {body} = ast;
-
-  let imports = lodash(body).map(lodash.cloneDeep).filter({
-      type: 'ImportDeclaration',
-      source: {
-        value: 'lodash'
+export function findModules({imports, scope}) {
+  let result = [];
+  estraverse.traverse(scope.block, {
+    enter(node) {
+      switch (node.type) {
+        case 'MemberExpression':
+          if (includes(imports, node.object.name)) {
+            result.push(node.property.name);
+          }
+        break;
+        case 'CallExpression': // Detect chaining
+          if (includes(imports, node.callee.name)) {
+            result.push('chain');
+          }
+        break;
       }
-    })
-    .pluck('specifiers')
-    .flatten()
-    .reject(specifier => {
-      if (specifier.default) {
-        varName = specifier.id.name;
-        return true;
-      }
-    })
-    .pluck('id').pluck('name')
-    .value();
-
-  console.log(ast);
-
-  imports = umd(ast, {
-    amd: true,
-    cjs: true,
-    es6: true
+    }
   });
+  return result;
+}
 
-  console.log(imports);
-  return imports.concat();
+export default function(code, options) {
+  // let varName = lodash.result(options, 'varName', '_');
+  let ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, 'acorn')));
+
+  let result = [];
+
+  lodash(umd(ast, {
+      amd: false,
+      cjs: true,
+      es6: true
+    }))
+    .filter(node => {
+      // consider adding lodash-fp & others
+      return includes(['lodash', options.outfile], node.source.value);
+    })
+    .each(node => {
+      // Add direct specifiers (`import {map, pick} from 'lodash'`)
+      lodash(node.specifiers)
+        .map('imported').compact()
+        .each(requireNode => {
+          result.push(requireNode.name);
+        }).value();
+    })
+    .map(node => {
+      // filter the specifiers down to the direct imports
+      // (handles `import x,{y,z} from 'foo';)
+      return {
+        imports: reject(node.specifiers, 'imported')
+                  .map(x => x.local.name),
+        scope: node.scope
+      };
+    })
+    .each(node => {
+      result.push(...findModules(node));
+    }).value();
+
+  return result;
 }

@@ -6,7 +6,11 @@ var lodashModules = _interopRequire(require("./lodashModules"));
 
 var parseForModules = _interopRequire(require("./parseForModules"));
 
-var isArray = require("lodash").isArray;
+var _lodash = require("lodash");
+
+var flatten = _lodash.flatten;
+var isArray = _lodash.isArray;
+var uniq = _lodash.uniq;
 
 var Promise = _interopRequire(require("bluebird"));
 
@@ -17,11 +21,12 @@ function resolve(modules, files, options) {
     return fs.readFileAsync(file).then(function (blob) {
       return parseForModules(String(blob), options);
     });
-  });
+  }).then(function (modules) {
+    return uniq(flatten(modules));
+  }).then(console.log);
 }
 
 function modularize(fileGlob, options) {
-  console.log(fileGlob);
   var files = isArray(fileGlob) ? Promise.resolve(fileGlob) : glob(fileGlob);
   return Promise.all([files, lodashModules]).spread(function (files, modules) {
     return resolve(modules, files, options);
