@@ -1,8 +1,32 @@
 # lodash-modularize
-[![Travis build status](http://img.shields.io/travis/megawac/lodash-modularize.svg?style=flat)](https://travis-ci.org/megawac/lodash-modularize)
-[![Code Climate](https://codeclimate.com/github/megawac/lodash-modularize/badges/gpa.svg)](https://codeclimate.com/github/megawac/lodash-modularize)
-[![Test Coverage](https://codeclimate.com/github/megawac/lodash-modularize/badges/coverage.svg)](https://codeclimate.com/github/megawac/lodash-modularize)
 [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
 [![devDependency Status](https://david-dm.org/megawac/lodash-modularize/dev-status.svg)](https://david-dm.org/megawac/lodash-modularize#info=devDependencies)
 
 Generate modular lodash builds.
+
+# Examples
+
+All examples are taken from this project
+
+```sh
+# List all the method's being used in src
+lodash-modularize src/** --list
+# => assign,chain,flatten,includes,isArray,reject,result,template,uniq,zipObject
+
+lodash-modularize src/**
+# <formated module>
+
+lodash-modularize src/** -o src/depends/lodash.js
+
+lodash-modularize src/** -o src/depends/lodash.js --format es6
+
+lodash-modularize src/** -o src/depends/lodash.js -f amd --out-format amd
+
+# Compile the code using lodash-cli!
+lodash-modularize src/** -o src/depends/lodash.js -f amd --compile
+
+# Update the projects using lodash to use the built depends/lodash instead
+lodash-modularize src/** -o depends/lodash.js -f cjs --compile --update
+```
+
+**NOTE** at this time chaining syntax is not supported (as it cannot be replicated through modules)

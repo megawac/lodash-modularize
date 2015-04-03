@@ -2,13 +2,20 @@
 
 var argv = require('yargs')
   .usage('Usage: $0 <input> [options]')
-  .example('$0 src/**.js --format amd -o src/lodash.js', 'Generate a build for source files')
+  .example('$0 src/**.js --format amd -o src/lodash.js --lodash-path bower/lodash', 'Generate a UMD build for source files')
+  .example('$0 src/**.js -g _ --out-format es6', 'Generate a UMD build for source files')
+  .example('$0 src/**.js --list', 'List the used lodash functions')
   .demand(1)
 
   .default('outfile', null)
   .alias('o', 'outfile')
   .nargs('o', 1)
   .describe('outfile', 'file to generate')
+  
+  .boolean('update')
+  .alias('update', ['u'])
+  .implies('update', 'outfile')
+  .describe('update', 'Update the files using lodash to use the built file')
 
   .default('format', ['cjs', 'es6'])
   .alias('f', 'format')

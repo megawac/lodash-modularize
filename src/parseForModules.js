@@ -36,7 +36,6 @@ export function findModules({imports, scope}) {
 }
 
 export default function(code, options) {
-  // let varName = lodash.result(options, 'varName', '_');
   let ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, 'acorn')));
   let result = [];
 
