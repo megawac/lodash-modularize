@@ -21,6 +21,9 @@ export function findModules({imports, scope}) {
       switch (node.type) {
         case 'MemberExpression':
           if (includes(imports, node.object.name)) {
+            if (node.computed) {
+              throw `Could not id computed function ${node.object.name}[${node.property.name}]`;
+            }
             result.push(node.property.name);
           }
         break;

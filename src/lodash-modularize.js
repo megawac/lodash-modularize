@@ -16,9 +16,12 @@ export function resolve(files, options) {
     return fs.readFileAsync(file).then(blob => parseForModules(blob, options))
       .then(methods => {
         if (includes(methods, 'chain')) {
-          throw `Chaining syntax in ${file.underline} is not yet supported`;
+          throw 'Chaining syntax is not yet supported';
         }
         return methods;
+      })
+      .catch(err => {
+        throw `${err} in ${file.underline}`;
       });
   })
   .then(methods => {
