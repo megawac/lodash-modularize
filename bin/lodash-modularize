@@ -3,7 +3,7 @@
 var argv = require('yargs')
   .usage('Usage: $0 <input> [options]')
   .example('$0 src/**.js --format amd -o src/lodash.js --lodash-path bower/lodash', 'Generate a UMD build for source files')
-  .example('$0 src/**.js -g _ --out-format es6', 'Generate a UMD build for source files')
+  .example('$0 src/**.js -g _ --exports es6', 'Generate a UMD build for source files')
   .example('$0 src/**.js --list', 'List the used lodash functions')
   .demand(1)
 
@@ -18,17 +18,16 @@ var argv = require('yargs')
   .describe('update', 'Update the files using lodash to use the built file')
 
   .boolean('production')
-  .alias('production', ['p'])
   .implies('production', 'output')
-  .describe('production', 'Generate an optimized & minified')
+  .describe('production', 'Generate an optimized & minified build')
 
   .default('format', ['cjs', 'es6'])
   .alias('f', 'format')
   .nargs('f', 1)
   .describe('format', 'modular format to export (es6,amd,cjs)')
 
-  .default('out-format', 'umd')
-  .describe('out-format', 'module format to export (es6,umd,cjs,amd)')
+  .default('exports', 'umd')
+  .describe('exports', 'module format to export (es6,umd,cjs,amd)')
 
   .default('lodash', 'lodash')
   .describe('lodash', 'The path to search and use for lodash (e.g. lodash-compat)')

@@ -20,7 +20,7 @@ lodash-modularize src/** -o src/depends/lodash.js
 
 lodash-modularize src/** -o src/depends/lodash.js --format es6
 
-lodash-modularize src/** -o src/depends/lodash.js -f amd --out-format amd
+lodash-modularize src/** -o src/depends/lodash.js -f amd --exports amd
 
 # Compile the code using lodash-cli!
 lodash-modularize src/** -o src/depends/lodash.js -f amd --compile

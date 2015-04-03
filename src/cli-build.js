@@ -10,12 +10,14 @@ const exportMap = {
 
 export default function build(methods, options) {
   let opts = [
+    // Detect the build type
     /compat/i.test(options.lodash) ? 'compat' : 'modern',
+    // Requested the required methods
     `include=${methods.join(',')}`,
-    // '--stdout',
-    '--silent',
     options.production ? '--production' : '--development',
-    `exports=${exportMap[options.outFormat]}`
+    // Map lodash-cli's export formats to ours
+    `exports=${exportMap[options.exports]}`,
+    '--silent'
   ];
 
   return new Promise(resolve => {

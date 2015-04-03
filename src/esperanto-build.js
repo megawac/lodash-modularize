@@ -27,7 +27,7 @@ export default function build(methods, modules, options) {
     name: 'lodash',
     amdName: 'lodash'
   };
-  switch (options.outFormat) {
+  switch (options.exports) {
     case 'cjs':
       return esperanto.toCjs(code, opts);
     case 'amd':
@@ -37,5 +37,5 @@ export default function build(methods, modules, options) {
     case 'es6':
       return {code};
   }
-  throw `Unsupported format: ${options.outFormat}`;
+  throw `Unsupported format: ${options.exports}`;
 }

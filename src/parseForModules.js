@@ -1,7 +1,7 @@
 import {parse} from 'acorn';
 import umd from 'acorn-umd';
 import estraverse from 'estraverse';
-import lodash, {includes, reject} from 'lodash';
+import lodash, {compact, includes, reject} from 'lodash';
 
 const acornOptions = {
   ecmaVersion: 6,
@@ -43,7 +43,7 @@ export default function(code, options) {
   let result = [];
 
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
-  let lodashOptions = [options.lodash, options.output].filter(Boolean);
+  let lodashOptions = compact([options.lodash, options.output]);
 
   lodash(umd(ast, {
       amd: false,
