@@ -57,7 +57,6 @@ function findModules(_ref) {
 }
 
 exports["default"] = function (code, options) {
-  // let varName = lodash.result(options, 'varName', '_');
   var ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, "acorn")));
   var result = [];
 

@@ -1,7 +1,5 @@
 var _interopRequire = function (obj) { return obj && obj.__esModule ? obj["default"] : obj; };
 
-// import cliBuild from './cli-build';
-
 exports.resolve = resolve;
 exports["default"] = modularize;
 Object.defineProperty(exports, "__esModule", {
@@ -17,6 +15,7 @@ var parseForModules = _interopRequire(require("./parseForModules"));
 var _lodash = require("lodash");
 
 var flatten = _lodash.flatten;
+var includes = _lodash.includes;
 var isArray = _lodash.isArray;
 var uniq = _lodash.uniq;
 
@@ -26,13 +25,22 @@ var glob = Promise.promisify(require("glob"));
 
 var esperantoBuild = _interopRequire(require("./esperanto-build"));
 
+var cliBuild = _interopRequire(require("./cli-build"));
+
+require("colors");
+
 function resolve(files, options) {
   return Promise.map(files, function (file) {
     return fs.readFileAsync(file).then(function (blob) {
-      return parseForModules(String(blob), options);
+      return parseForModules(blob, options);
+    }).then(function (methods) {
+      if (includes(methods, "chain")) {
+        throw "Chaining syntax in " + file.underline + " is not yet supported";
+      }
+      return methods;
     });
-  }).then(function (modules) {
-    return uniq(flatten(modules));
+  }).then(function (methods) {
+    return uniq(flatten(methods));
   });
 }
 
@@ -47,12 +55,14 @@ function modularize(fileGlob, options) {
       return methods;
     }
     var code = undefined;
-    if (options.compile) {} else {
+    if (options.compile) {
+      code = cliBuild(methods, options);
+    } else {
       code = esperantoBuild(methods, modules, options).code;
     }
 
     if (options.outfile) {
-      return fs.writeFile(options.outfile, code).then(function () {
+      return fs.writeFileAsync(options.outfile, code).then(function () {
         return code;
       });
     }

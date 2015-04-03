@@ -49,6 +49,7 @@ var argv = require('yargs')
   .argv;
 
 var modularize = require('..');
+require('colors');
 
 argv.lodashPath = argv.lodashPath || argv.lodash;
 
@@ -58,14 +59,14 @@ argv.format = argv.f = argv.f.join(',').split(',');
 modularize(argv._, argv)
   .then(function(result) {
     if (argv.list) {
-      console.log(result.sort().join(','));
+      console.log(result.join(',').bold);
       return;
     } else if (!argv.outfile) {
       console.log(result);
     }
   })
   .catch(function(error) {
-    console.error(error);
+    console.error('\n\n', error.red.bold, '\n');
     process.exit(1);
   });
 
