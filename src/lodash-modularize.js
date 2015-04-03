@@ -45,12 +45,13 @@ export default function modularize(fileGlob, options) {
       } else {
         code = esperantoBuild(methods, modules, options).code;
       }
-
-      if (options.outfile) {
-        return fs.writeFileAsync(options.outfile, code)
-          .then(() => code);
+      let $code = Promise.resolve(code);
+      if (options.output) {
+        return $code
+          .then(code => fs.writeFileAsync(options.output, code))
+          .then(() => $code);
       }
-      return code;
+      return $code;
     });
 }
 

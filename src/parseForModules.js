@@ -43,7 +43,7 @@ export default function(code, options) {
   let result = [];
 
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
-  let lodashOptions = [options.lodash, options.outfile];
+  let lodashOptions = [options.lodash, options.output].filter(Boolean);
 
   lodash(umd(ast, {
       amd: false,

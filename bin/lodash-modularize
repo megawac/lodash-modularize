@@ -7,15 +7,20 @@ var argv = require('yargs')
   .example('$0 src/**.js --list', 'List the used lodash functions')
   .demand(1)
 
-  .default('outfile', null)
-  .alias('o', 'outfile')
+  .default('output', null)
+  .alias('o', 'output')
   .nargs('o', 1)
-  .describe('outfile', 'file to generate')
+  .describe('output', 'file to generate')
   
   .boolean('update')
   .alias('update', ['u'])
-  .implies('update', 'outfile')
+  .implies('update', 'output')
   .describe('update', 'Update the files using lodash to use the built file')
+
+  .boolean('production')
+  .alias('production', ['p'])
+  .implies('production', 'output')
+  .describe('production', 'Generate an optimized & minified')
 
   .default('format', ['cjs', 'es6'])
   .alias('f', 'format')
@@ -61,7 +66,7 @@ modularize(argv._, argv)
     if (argv.list) {
       console.log(result.join(',').bold);
       return;
-    } else if (!argv.outfile) {
+    } else if (!argv.output) {
       console.log(result);
     }
   })
