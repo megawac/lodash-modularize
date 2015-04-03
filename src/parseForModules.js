@@ -1,7 +1,10 @@
 import {parse} from 'acorn';
 import umd from 'acorn-umd';
+import {attachComments} from 'escodegen';
 import estraverse from 'estraverse';
-import lodash, {compact, includes, reject} from 'lodash';
+import lodash, {compact, includes, map, reject} from 'lodash';
+
+import updateReferences from './updateReferences';
 
 const acornOptions = {
   ecmaVersion: 6,
@@ -39,7 +42,14 @@ export function findModules({imports, scope}) {
 }
 
 export default function(code, options) {
-  let ast = parse(code, lodash.assign({}, acornOptions, lodash.result(options, 'acorn')));
+  let comments = [];
+  let tokens = [];
+  let ast = parse(code, lodash.assign({
+    ranges: true,
+    onComment: comments,
+    onToken: tokens
+  }, acornOptions, lodash.result(options, 'acorn')));
+
   let result = [];
 
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
@@ -61,6 +71,12 @@ export default function(code, options) {
         .each(requireNode => {
           result.push(requireNode.name);
         }).value();
+    })
+    .tap(nodes => {
+      if (options.update && nodes.length) {
+        console.log(attachComments(ast, comments, tokens));
+        updateReferences(ast, map(nodes, 'reference'), options);
+      }
     })
     .map(node => {
       // filter the specifiers down to the direct imports
