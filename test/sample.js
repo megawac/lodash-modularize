@@ -1,4 +1,6 @@
 import lodash from 'lodash';
+var x = require('lodash');
 
-let z = 'y';
-module.exports = lodash[z];
+// Some comments and other stuff
+/* yo */
+module.exports = lodash.each;

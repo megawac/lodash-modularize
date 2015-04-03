@@ -13,7 +13,7 @@ import 'colors';
 
 export function resolve(files, options) {
   return Promise.map(files, file => {
-    return fs.readFileAsync(file).then(blob => parseForModules(blob, options))
+    return fs.readFileAsync(file).then(blob => parseForModules(blob, file, options))
       .then(methods => {
         if (includes(methods, 'chain')) {
           throw 'Chaining syntax is not yet supported';

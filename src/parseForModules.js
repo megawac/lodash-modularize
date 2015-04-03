@@ -1,8 +1,7 @@
 import {parse} from 'acorn';
 import umd from 'acorn-umd';
-import {attachComments} from 'escodegen';
 import estraverse from 'estraverse';
-import lodash, {compact, includes, map, reject} from 'lodash';
+import lodash, {compact, includes, reject} from 'lodash';
 
 import updateReferences from './updateReferences';
 
@@ -41,13 +40,10 @@ export function findModules({imports, scope}) {
   return result;
 }
 
-export default function(code, options) {
-  let comments = [];
-  let tokens = [];
+export default function(code, path, options) {
   let ast = parse(code, lodash.assign({
     ranges: true,
-    onComment: comments,
-    onToken: tokens
+    locations: true
   }, acornOptions, lodash.result(options, 'acorn')));
 
   let result = [];
@@ -74,8 +70,7 @@ export default function(code, options) {
     })
     .tap(nodes => {
       if (options.update && nodes.length) {
-        console.log(attachComments(ast, comments, tokens));
-        updateReferences(ast, map(nodes, 'reference'), options);
+        updateReferences(code, path, nodes, options);
       }
     })
     .map(node => {

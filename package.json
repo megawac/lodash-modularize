@@ -50,6 +50,7 @@
   "dependencies": {
     "acorn": "^1.0.0",
     "acorn-umd": "^0.3.0",
+    "ast-types": "^0.7.2",
     "bluebird": "^2.9.14",
     "colors": "^1.0.3",
     "escodegen": "^1.6.1",
@@ -58,6 +59,7 @@
     "glob": "^5.0.3",
     "lodash": "^3.6.0",
     "lodash-cli": "3.6.0",
+    "recast": "^0.10.11",
     "yargs": "^3.6.0"
   }
 }
