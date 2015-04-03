@@ -35,7 +35,7 @@ export default function modularize(fileGlob, options) {
       }
 
       if (options.outfile) {
-        return fs.writeFile(options.outfile, code)
+        return fs.writeFileAsync(options.outfile, code)
           .then(() => code);
       }
       return code;
