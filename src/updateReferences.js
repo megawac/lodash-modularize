@@ -1,6 +1,7 @@
 import {find, transform} from 'lodash';
 import recast from 'recast';
 import path from 'path';
+import fs from 'fs';
 
 const builders = recast.types.builders;
 
@@ -39,7 +40,7 @@ export const updaters = {
         break;
       }
       default:
-        console.log(node.type);
+        throw `${node.type} commonjs imports are not currently supported (file an issue)`;
     }
   }
 };
@@ -69,8 +70,6 @@ export default function updateReferences(code, source, nodes, {output}) {
     };
   }, {});
 
-  // console.log(ast.program.body);
   recast.visit(ast, visitors);
-
-  console.log(recast.print(ast));
+  fs.writeFile(source, recast.print(ast).code);
 }
