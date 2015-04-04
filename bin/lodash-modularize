@@ -52,8 +52,10 @@ var argv = require('yargs')
   })
   .argv;
 
-var modularize = require('..');
+// I want it all
+require('bluebird').longStackTraces();
 require('colors');
+var modularize = require('..');
 
 argv.lodashPath = argv.lodashPath || argv.lodash;
 
@@ -70,7 +72,8 @@ modularize(argv._, argv)
     }
   })
   .catch(function(error) {
-    console.error('\n\n', error.red.bold, '\n');
-    process.exit(1);
+    // process.exit(1) after the error is outputted
+    setTimeout(process.exit, 100, 1);
+    throw error.red.bold;
   });
 

@@ -30,6 +30,20 @@ lodash-modularize src/** -o src/depends/lodash.js -f amd --compile
 lodash-modularize src/** -o depends/lodash.js --update
 ```
 
-**NOTE** at this time chaining syntax is not supported (as it cannot be replicated through modules)
+# Notes
+
+At this time **chaining syntax is not supported** (as it cannot be replicated through modules)
 
 Also **AMD** is not yet fully supported.
+
+All though we go out of our way to be robust and support various ways to detect lodash imports of lodash there are things we don't bother to handle. For example if you do any of these things, we'll probably miss it (same goes for global variables)
+
+```js
+const _ = require('lodash');
+const lodash = _;
+
+function reassignment() {
+    let _ = 'reassigned'.trim();
+    return _;
+}
+```
