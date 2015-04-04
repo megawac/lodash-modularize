@@ -1,5 +1,4 @@
-import lodash from 'lodash';
-var x = require('lodash');
+x.y = require('lodash');
 
 // Some comments and other stuff
 /* yo */

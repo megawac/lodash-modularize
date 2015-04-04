@@ -1,32 +1,53 @@
-import {extend, find, transform} from 'lodash';
-import {Node} from 'acorn';
+import {find, transform} from 'lodash';
 import recast from 'recast';
+import path from 'path';
+
+const builders = recast.types.builders;
+
+function replaceRequire(node, output) {
+  return builders.callExpression(node.callee, [builders.literal(output)]);
+}
 
 export const updaters = {
-  ImportDeclaration(node, output) {
-    let {start, end, raw, type} = node.source;
-    let rawOut = `'${output}'`;
-    let sizeChange = rawOut.length - raw.length;
-    return extend(new Node(), node, {
-      end: node.end + sizeChange,
-      source: {
-        start,
-        end: end + sizeChange,
-        raw: rawOut,
-        value: output,
-        type
-      }
-    });
+  ImportDeclaration(path, node, output) {
+    let source = builders.moduleSpecifier(output);
+    let r = builders.importDeclaration(node.specifiers, source);
+    path.replace(r);
   },
 
-  CJSImport() {
+  CJSImport(path, node, output) {
+    switch (node.type) {
+      case 'VariableDeclaration': {
+        let {id, init} = node.declarations[0];
 
+        path.replace(builders.variableDeclaration(node.kind, [
+          builders.variableDeclarator(id, replaceRequire(init, output))
+        ]));
+        break;
+      }
+      case 'AssignmentExpression': {
+        let {operator, left, right} = node;
+        path.replace(builders.assignmentExpression(operator, left, replaceRequire(right, output)));
+        break;
+      }
+      case 'Property': {
+        path.replace(builders.property(node.kind, node.key, replaceRequire(node.value, output)));
+        break;
+      }
+      case 'CallExpression': {
+        path.replace(replaceRequire(node, output));
+        break;
+      }
+      default:
+        console.log(node.type);
+    }
   }
 };
 
 // Update the import references from the source to point at the
 // new compiled file.
-export default function updateReferences(code, path, nodes, {output}) {
+export default function updateReferences(code, source, nodes, {output}) {
+  output = path.relative(path.dirname(source), output);
   let ast = recast.parse(code);
 
   let visitors = transform(nodes, (memo, node) => {
@@ -41,8 +62,8 @@ export default function updateReferences(code, path, nodes, {output}) {
           type, loc: {start, end}
         }
       });
-      if (other && false) {
-        updater.call(this, node, output);
+      if (other) {
+        updater(path, node, output);
       }
       this.traverse(path);
     };
