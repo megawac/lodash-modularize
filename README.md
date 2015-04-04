@@ -2,9 +2,9 @@
 [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
 [![devDependency Status](https://david-dm.org/megawac/lodash-modularize/dev-status.svg)](https://david-dm.org/megawac/lodash-modularize#info=devDependencies)
 
-Generate modular lodash builds.
+Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use.
 
-# Examples
+# Example Usage
 
 All examples are taken from this project
 
@@ -20,13 +20,16 @@ lodash-modularize src/** -o src/depends/lodash.js
 
 lodash-modularize src/** -o src/depends/lodash.js --format es6
 
-lodash-modularize src/** -o src/depends/lodash.js -f amd --exports amd
+# Set the global variable to search for to `lodash`
+lodash-modularize src/** -o src/depends/lodash.js --global lodash --exports umd
 
 # Compile the code using lodash-cli!
 lodash-modularize src/** -o src/depends/lodash.js -f amd --compile
 
 # Update the projects using lodash to use the built depends/lodash instead
-lodash-modularize src/** -o depends/lodash.js -f cjs --compile --update
+lodash-modularize src/** -o depends/lodash.js --update
 ```
 
 **NOTE** at this time chaining syntax is not supported (as it cannot be replicated through modules)
+
+Also **AMD** is not yet fully supported.

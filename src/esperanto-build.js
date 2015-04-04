@@ -24,8 +24,7 @@ export default function build(methods, modules, options) {
   let opts = {
     _evilES3SafeReExports: true,
     strict: false,
-    name: 'lodash',
-    amdName: 'lodash'
+    name: options.global || '_'
   };
   switch (options.exports) {
     case 'cjs':
