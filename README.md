@@ -2,7 +2,7 @@
 [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
 [![devDependency Status](https://david-dm.org/megawac/lodash-modularize/dev-status.svg)](https://david-dm.org/megawac/lodash-modularize#info=devDependencies)
 
-Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use.
+Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using browserify or r.js).
 
 # Example Usage
 
@@ -28,6 +28,17 @@ lodash-modularize src/** -o src/depends/lodash.js -f amd --compile
 
 # Update the projects using lodash to use the built depends/lodash instead
 lodash-modularize src/** -o depends/lodash.js --update
+```
+
+Or as a `package.json` script
+
+```js
+{
+    "dependencies": {"lodash": "^3.0", "lodash-modularize": "^1.0"},
+    "scripts": {
+        "prepublish": "lodash-modularize src/**.js -o src/depends/lodash.js -u"
+    }
+}
 ```
 
 # Notes
