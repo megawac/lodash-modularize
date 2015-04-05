@@ -1,6 +1,5 @@
-# lodash-modularize
-[![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
-[![devDependency Status](https://david-dm.org/megawac/lodash-modularize/dev-status.svg)](https://david-dm.org/megawac/lodash-modularize#info=devDependencies)
+# lodash-modularize [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
+
 
 Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using browserify or r.js).
 
