@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import lodash, {includes, template} from 'lodash';
 
+import chainableMethods from './lodash-chainable';
+
 const buildPath = path.join(__dirname, '../templates/import-build.tpl');
 const chainPath = path.join(__dirname, '../templates/chain-build.tpl');
 const normalTemplate = template(fs.readFileSync(buildPath));
@@ -29,7 +31,7 @@ export default function build(methods, modules, options) {
       return {
         name,
         path: path.join(_path, category, name),
-        chained: false
+        chained: chainMethods[name]
       };
     })
     .partition(node => /\/chain\//.test(node.path))
