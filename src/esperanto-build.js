@@ -1,26 +1,47 @@
 import esperanto from 'esperanto';
 import fs from 'fs';
 import path from 'path';
-import {includes, template} from 'lodash';
+import lodash, {includes, template} from 'lodash';
 
-const tplPath = path.join(__dirname, '../templates/import-build.tpl');
-const buildTemplate = template(fs.readFileSync(tplPath));
+const buildPath = path.join(__dirname, '../templates/import-build.tpl');
+const chainPath = path.join(__dirname, '../templates/chain-build.tpl');
+const normalTemplate = template(fs.readFileSync(buildPath));
+const chainTemplate = template(fs.readFileSync(chainPath));
 
 export default function build(methods, modules, options) {
+  let _path = options.lodashPath;
+  let {ext, dir, name, base} = path.parse(_path);
+  // Don't rel a cjs import
+  if (options.output != null &&
+    (ext !== '' || dir !== '' || name !== base)
+  ) {
+    _path = path.relative(path.dirname(options.output), _path);
+  }
+
   // Otherwise compile a file for them to the modularization
-  let config = methods.map(name => {
-    for (var category in modules) {
-      if (includes(modules[category], name)) {
-        break;
+  let config = lodash.chain(methods)
+    .map(name => {
+      for (var category in modules) {
+        if (includes(modules[category], name)) {
+          break;
+        }
       }
-    }
-    return {
-      name,
-      path: path.join(options.lodashPath, category, name)
-    };
+      return {
+        name,
+        path: path.join(_path, category, name),
+        chained: false
+      };
+    })
+    .partition(node => /\/chain\//.test(node.path))
+    .value();
+
+  let template = includes(methods, 'chain') ? chainTemplate : normalTemplate;
+  let code = template({
+    config: config[1],
+    chainMethods: config[0],
+    lodashPath: _path
   });
 
-  let code = buildTemplate({config});
   let opts = {
     _evilES3SafeReExports: true,
     strict: false,

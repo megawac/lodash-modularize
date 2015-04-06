@@ -4,3 +4,10 @@ let log = require('logger'),
 
 let result = sortBy(_.flatten(uniq([{a: 1}, {a: 2}, {a: 1}, {a: 0}])), 'a');
 lodash.each(result, log);
+
+lodash.chain([1, 2, 3])
+ .tap(function(array) {
+   array.pop();
+ })
+ .reverse()
+ .value();

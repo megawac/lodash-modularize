@@ -23,7 +23,7 @@
   "asi"           : false,
   "boss"          : false,
   "debug"         : true,
-  "eqnull"        : false,
+  "eqnull"        : true,
   "esnext"        : true,
   "evil"          : false,
   "expr"          : false,

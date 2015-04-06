@@ -2,7 +2,7 @@
 import <%= method.name %> from '<%= method.path %>';<% }); %>
 
 export default function() {
-  throw 'Chaining is not supported at this time when using the module tool';
-};
+  throw 'lodash chaining is not supported in this build. Try rebuilding.';
+}
 <% _.each(config, function(method) { %>
 lodash.<%= method.name %> = <%= method.name %>;<% }); %>

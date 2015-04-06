@@ -2,23 +2,16 @@ import fs from './fs';
 import lodashModules from './lodashModules';
 import parseForModules from './parseForModules';
 
-import {flatten, includes, isArray, uniq} from 'lodash';
+import {flatten, isArray, uniq} from 'lodash';
 import Promise from 'bluebird';
 const glob = Promise.promisify(require('glob'));
 
 import esperantoBuild from './esperanto-build';
 import cliBuild from './cli-build';
-import Error from './Error';
 
 export function resolve(files, options) {
   return Promise.map(files, file => {
-    return fs.readFileAsync(file).then(blob => parseForModules(blob, file, options))
-      .then(methods => {
-        if (includes(methods, 'chain')) {
-          throw new Error('Chaining syntax is not yet supported', file);
-        }
-        return methods;
-      });
+    return fs.readFileAsync(file).then(blob => parseForModules(blob, file, options));
   })
   .then(methods => {
     return uniq(flatten(methods).sort(), true);
