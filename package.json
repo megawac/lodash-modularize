@@ -1,6 +1,6 @@
 {
   "name": "lodash-modularize",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "dist/lodash-modularize.js",
   "scripts": {
