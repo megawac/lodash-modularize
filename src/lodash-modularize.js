@@ -21,7 +21,7 @@ export function resolve(files, options) {
       });
   })
   .then(methods => {
-    return uniq(flatten(methods));
+    return uniq(flatten(methods).sort(), true);
   });
 }
 
