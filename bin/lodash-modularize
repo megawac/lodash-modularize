@@ -27,6 +27,7 @@ var argv = require('yargs')
   .describe('format', 'modular format to export (es6,amd,cjs)')
 
   .default('exports', 'umd')
+  .alias('exports', 'export')
   .describe('exports', 'module format to export (es6,umd,cjs,amd)')
 
   .default('lodash', 'lodash')

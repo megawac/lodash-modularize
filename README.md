@@ -40,6 +40,43 @@ Or as a `package.json` script
 }
 ```
 
+# So what can it detect
+
+**app.js**
+```js
+import _, {sortBy, uniq} from 'lodash';
+let log = require('logger'),
+    lodash = require('lodash');
+
+let result = sortBy(_.flatten(uniq([{a: 1}, {a: 2}, {a: 1}, {a: 0}])), 'a');
+lodash.each(result, log);
+```
+
+```sh
+$ lodash-modularize app.js --list
+# => each, flatten, sortBy, uniq
+
+$ lodash-modularize ./test/sample.js --exports cjs -o lodash.js
+```
+**lodash.js**
+```js
+var sortBy = require('lodash/collection/sortBy');
+var uniq = require('lodash/array/uniq');
+var flatten = require('lodash/array/flatten');
+var each = require('lodash/collection/each');
+
+module.exports = function() {
+  throw 'Chaining is not supported at this time when using the module tool';
+};
+
+lodash.sortBy = sortBy;
+lodash.uniq = uniq;
+lodash.flatten = flatten;
+lodash.each = each;
+```
+
+And many other patterns including globals (opt-in).
+
 # Notes
 
 At this time **chaining syntax is not supported** (as it cannot be replicated through modules)
