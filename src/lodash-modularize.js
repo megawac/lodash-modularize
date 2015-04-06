@@ -8,20 +8,16 @@ const glob = Promise.promisify(require('glob'));
 
 import esperantoBuild from './esperanto-build';
 import cliBuild from './cli-build';
-
-import 'colors';
+import Error from './Error';
 
 export function resolve(files, options) {
   return Promise.map(files, file => {
     return fs.readFileAsync(file).then(blob => parseForModules(blob, file, options))
       .then(methods => {
         if (includes(methods, 'chain')) {
-          throw 'Chaining syntax is not yet supported';
+          throw new Error('Chaining syntax is not yet supported', file);
         }
         return methods;
-      })
-      .catch(err => {
-        throw `${err} in ${file.underline}`;
       });
   })
   .then(methods => {

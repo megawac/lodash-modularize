@@ -4,6 +4,7 @@ import estraverse from 'estraverse';
 import lodash, {compact, includes, reject} from 'lodash';
 
 import updateReferences from './updateReferences';
+import Error from './Error';
 
 const acornOptions = {
   ecmaVersion: 6,
@@ -16,7 +17,7 @@ const acornOptions = {
   allowHashBang: true
 };
 
-export function findModules({imports, scope}) {
+export function findModules(path, {imports, scope}) {
   let result = [];
   estraverse.traverse(scope, {
     enter(node) {
@@ -24,7 +25,8 @@ export function findModules({imports, scope}) {
         case 'MemberExpression':
           if (includes(imports, node.object.name)) {
             if (node.computed) {
-              throw `Could not id computed function ${node.object.name}[${node.property.name}]`;
+              let msg = `Could not id computed function ${node.object.name}[${node.property.name}]`;
+              throw new Error(msg, path);
             }
             result.push(node.property.name);
           }
@@ -83,11 +85,11 @@ export default function(code, path, options) {
       };
     })
     .each(node => {
-      result.push(...findModules(node));
+      result.push(...findModules(path, node));
     }).value();
 
   if (typeof options.global === 'string') {
-    result.push(...findModules({
+    result.push(...findModules(path, {
       imports: [options.global],
       scope: ast
     }));
