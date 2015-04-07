@@ -30,6 +30,7 @@ export default function build(methods, modules, options) {
       }
       return {
         name,
+        propString: `${name}: ${name}`,
         path: path.join(_path, category, name),
         chained: chainableMethods[name]
       };

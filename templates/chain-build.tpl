@@ -11,10 +11,14 @@ import __<%= method.name %>__ from '<%= method.path %>';<% }); %>
 var _ = clone(lodash);
 
 // Add the methods used through chaining and explict use
-<% _.each(config, function(method) { %>
 mixin(_, {
-  <%= method.name %>: <%= method.name %>
-}, <%= method.chained %>);<% }); %>
+  <%= _(config).filter('chained').map('propString').join(',\n  ') %>
+}, true);
+
+mixin(_, {
+  <%= _(config).reject('chained').map('propString').join(',\n  ') %>
+}, true);
+
 <% _.each(chainMethods, function(method) { %>
 _.prototype.<%= method.name %> = __<%= method.name %>__;
 <% }); %>

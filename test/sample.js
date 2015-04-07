@@ -9,5 +9,10 @@ lodash.chain([1, 2, 3])
  .tap(function(array) {
    array.pop();
  })
+ .map('x')
  .reverse()
  .value();
+
+_([1])
+ .isEmpty()
+ .toJSON();
