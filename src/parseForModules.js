@@ -30,12 +30,26 @@ export function findModules(path, {imports, scope}) {
             }
             result.push(node.property.name);
           }
-        break;
-        case 'CallExpression': // Detect chaining
-          if (includes(imports, node.callee.name)) {
-            result.push('chain');
+          break;
+        case 'CallExpression': { // Detect chaining
+          let callee = node;
+          let props = [];
+          while (callee = callee.callee) {
+            if (callee.property) {
+              props.push(callee.property.name);
+            }
+            if (callee.object) {
+              callee = callee.object;
+            }
+            if (!callee.callee) {
+              break;
+            }
           }
-        break;
+          if (callee && includes(imports, callee.name)) {
+            result.push(...props);
+          }
+          break;
+        }
       }
     }
   });

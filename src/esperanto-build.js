@@ -31,7 +31,7 @@ export default function build(methods, modules, options) {
       return {
         name,
         path: path.join(_path, category, name),
-        chained: chainMethods[name]
+        chained: chainableMethods[name]
       };
     })
     .partition(node => /\/chain\//.test(node.path))
