@@ -84,6 +84,8 @@ Also **AMD** is not yet fully supported.
 
 Lazy chaining is not fully supported (it works but its not lazy).
 
+You should use in conjunction with linters (jshint/eslint/etc) as this won't detect unused variables.
+
 All though we go out of our way to be robust and support various ways to detect lodash imports of lodash there are things we don't bother to handle. For example if you do any of these things, we'll probably miss it (same goes for global variables)
 
 ```js

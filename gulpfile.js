@@ -44,7 +44,7 @@ function createLintTask(taskName, files) {
 createLintTask('lint-src', ['src/**/*.js'])
 
 // Lint our test code
-createLintTask('lint-test', ['test/**/*.js'])
+createLintTask('lint-test', ['test/unit/*.js'])
 
 // Build two versions of the library
 gulp.task('build', ['lint-src', 'clean'], function() {
