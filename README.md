@@ -60,28 +60,29 @@ $ lodash-modularize ./test/sample.js --exports cjs -o lodash.js
 ```
 **lodash.js**
 ```js
+var each = require('lodash/collection/each');
+var flatten = require('lodash/array/flatten');
 var sortBy = require('lodash/collection/sortBy');
 var uniq = require('lodash/array/uniq');
-var flatten = require('lodash/array/flatten');
-var each = require('lodash/collection/each');
 
-module.exports = function() {
-  throw 'Chaining is not supported at this time when using the module tool';
-};
+function lodash() {
+  throw 'lodash chaining is not included in this build... Try rebuilding.';
+}
+module.exports = lodash;
 
+lodash.each = each;
+lodash.flatten = flatten;
 lodash.sortBy = sortBy;
 lodash.uniq = uniq;
-lodash.flatten = flatten;
-lodash.each = each;
 ```
 
-And many other patterns including globals (opt-in).
+And many other patterns including globals (opt-in), **chaining**, and mixins.
 
 # Notes
 
-At this time **chaining syntax is not supported** (as it cannot be replicated through modules)
-
 Also **AMD** is not yet fully supported.
+
+Lazy chaining is not fully supported (it works but its not lazy).
 
 All though we go out of our way to be robust and support various ways to detect lodash imports of lodash there are things we don't bother to handle. For example if you do any of these things, we'll probably miss it (same goes for global variables)
 
