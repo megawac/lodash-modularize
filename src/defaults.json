@@ -1,0 +1,12 @@
+{
+  "compile": false,
+  "exports": "umd",
+  "format": ["cjs", "es6"],
+  "global": null,
+  "list": false,
+  "lodash": "lodash",
+  "lodashPath": null,
+  "output": null,
+  "production": false,
+  "update": false
+}

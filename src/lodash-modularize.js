@@ -2,12 +2,14 @@ import fs from './fs';
 import lodashModules from './lodashModules';
 import parseForModules from './parseForModules';
 
-import {flatten, isArray, uniq} from 'lodash';
+import {defaults, flatten, isArray, uniq} from 'lodash';
 import Promise from 'bluebird';
 const glob = Promise.promisify(require('glob'));
 
 import esperantoBuild from './esperanto-build';
 import cliBuild from './cli-build';
+
+const defaultOpts = require('./defaults.json');
 
 export function resolve(files, options) {
   return Promise.map(files, file => {
@@ -21,6 +23,8 @@ export function resolve(files, options) {
 export default function modularize(fileGlob, options) {
   let files = (isArray(fileGlob) ? Promise.resolve(fileGlob) : glob(fileGlob))
     .then(files => resolve(files, options));
+
+  options = defaults({}, options, defaultOpts);
 
   return Promise.all([files, lodashModules])
     .spread((methods, modules) => {

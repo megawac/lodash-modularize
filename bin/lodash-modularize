@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+var defaults = require('../src/defaults.json');
 var argv = require('yargs')
   .usage('Usage: $0 <input> [options]')
   .example('$0 src/**.js --format amd -o src/lodash.js --lodash-path bower/lodash', 'Generate a UMD build for source files')
@@ -8,7 +9,7 @@ var argv = require('yargs')
   .demand(1)
 
   .option('output', {
-    default: null,
+    default: defaults.output,
     alias: 'o',
     describe: 'file to generate'
   })
@@ -26,32 +27,33 @@ var argv = require('yargs')
     describe: 'Generate an optimized & minified build'
   })
   .implies('production', 'output')
+  .implies('production', 'compile')
 
   .option('format', {
-    default: ['cjs', 'es6'],
+    default: defaults.format,
     alias: 'f',
     describe: 'modular format to export (es6,amd,cjs)'
   })
   .nargs('format', 1)
 
   .option('exports', {
-    default: 'umd',
+    default: defaults.exports,
     alias: 'export',
     describe: 'module format to export (es6,umd,cjs,amd)'
   })
 
   .option('lodash', {
-    default: 'lodash',
+    default: defaults.lodash,
     describe: 'The path to search and use for lodash (e.g. lodash-compat)'
   })
 
   .option('lodash-path', {
-    default: null,
+    default: defaults.lodashPath,
     describe: 'Lodash base path (useful for AMD)'
   })
 
   .option('global', {
-    default: null,
+    default: defaults.global,
     alias: 'g',
     describe: 'Global lodash variable (e.g. _ or lodash)'
   })
