@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 var defaults = require('../src/defaults.json');
+var screenWidth = require('window-size').width;
+
 var argv = require('yargs')
   .usage('Usage: $0 <input> [options]')
   .example('$0 src/**.js --format amd -o src/lodash.js --lodash-path bower/lodash', 'Generate a UMD build for source files')
@@ -71,6 +73,7 @@ var argv = require('yargs')
   .version(function() {
     return require('../package').version;
   })
+  .wrap(Math.min(screenWidth, 120))
   .argv;
 
 // I want it all
