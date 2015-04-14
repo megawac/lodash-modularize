@@ -7,47 +7,65 @@ var argv = require('yargs')
   .example('$0 src/**.js --list', 'List the used lodash functions')
   .demand(1)
 
-  .default('output', null)
-  .alias('o', 'output')
-  .nargs('o', 1)
-  .describe('output', 'file to generate')
+  .option('output', {
+    default: null,
+    alias: 'o',
+    describe: 'file to generate'
+  })
+  .nargs('output', 1)
   
-  .boolean('update')
-  .alias('update', ['u'])
+  .option('update', {
+    alias: 'u',
+    type: 'boolean',
+    describe: 'Update the files using lodash to use the built file'
+  })
   .implies('update', 'output')
-  .describe('update', 'Update the files using lodash to use the built file')
 
-  .boolean('production')
+  .option('production', {
+    type: 'boolean',
+    describe: 'Generate an optimized & minified build'
+  })
   .implies('production', 'output')
-  .describe('production', 'Generate an optimized & minified build')
 
-  .default('format', ['cjs', 'es6'])
-  .alias('f', 'format')
-  .nargs('f', 1)
-  .describe('format', 'modular format to export (es6,amd,cjs)')
+  .option('format', {
+    default: ['cjs', 'es6'],
+    alias: 'f',
+    describe: 'modular format to export (es6,amd,cjs)'
+  })
+  .nargs('format', 1)
 
-  .default('exports', 'umd')
-  .alias('exports', 'export')
-  .describe('exports', 'module format to export (es6,umd,cjs,amd)')
+  .option('exports', {
+    default: 'umd',
+    alias: 'export',
+    describe: 'module format to export (es6,umd,cjs,amd)'
+  })
 
-  .default('lodash', 'lodash')
-  .describe('lodash', 'The path to search and use for lodash (e.g. lodash-compat)')
+  .option('lodash', {
+    default: 'lodash',
+    describe: 'The path to search and use for lodash (e.g. lodash-compat)'
+  })
 
-  .default('lodash-path', null)
-  .describe('lodash-path', 'Lodash base path (useful for AMD)')
-  
-  .default('global', null)
-  .alias('g', 'global')
+  .option('lodash-path', {
+    default: null,
+    describe: 'Lodash base path (useful for AMD)'
+  })
+
+  .option('global', {
+    default: null,
+    alias: 'g',
+    describe: 'Global lodash variable (e.g. _ or lodash)'
+  })
   .nargs('g', 1)
-  .describe('global', 'Global lodash variable (e.g. _ or lodash)')
 
-  .boolean('compile')
-  .alias('compile', ['c'])
-  .describe('compile', 'Whether to compile the results like lodash cli')
+  .option('compile', {
+    alias: ['c'],
+    describe: 'Whether to compile the results like lodash cli',
+    type: 'boolean'
+  })
 
   .boolean('list')
   .describe('list', 'List the use lodash modules instead of building a file')
-
+  
   .version(function() {
     return require('../package').version;
   })
