@@ -1,6 +1,8 @@
-import lodash from '<%= lodashPath %>/chain/lodash.js';
-import clone from '<%= lodashPath %>/object/clone.js';
-import mixin from '<%= lodashPath %>/utility/mixin.js';
+import lodash from '<%= lodashPath %>/chain/lodash';
+import LodashWrapper from '<%= lodashPath %>/internal/LodashWrapper';
+
+import create from '<%= lodashPath %>/object/create';
+import mixin from '<%= lodashPath %>/utility/mixin';
 
 <% _.each(config, function(method) { %>
 import <%= method.name %> from '<%= method.path %>';<% }); %>
@@ -8,7 +10,13 @@ import <%= method.name %> from '<%= method.path %>';<% }); %>
 <% _.each(chainMethods, function(method) { %>
 import __<%= method.name %>__ from '<%= method.path %>';<% }); %>
 
-var _ = clone(lodash);
+function _(value) {
+  if (!(this instanceof _)) {
+    return new _(value);
+  }
+  LodashWrapper.call(this, value);
+}
+_.prototype = create(lodash.prototype);
 
 // Add the methods used through chaining and explict use
 mixin(_, {
