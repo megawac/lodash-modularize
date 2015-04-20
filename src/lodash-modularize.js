@@ -9,7 +9,7 @@ const glob = Promise.promisify(require('glob'));
 import esperantoBuild from './esperanto-build';
 import cliBuild from './cli-build';
 
-const defaultOpts = require('./defaults.json');
+const defaultOpts = require('../defaults.json');
 
 export function resolve(files, options) {
   return Promise.map(files, file => {

@@ -4,7 +4,7 @@
   "format": ["cjs", "es6"],
   "global": null,
   "list": false,
-  "lodash": "lodash",
+  "lodash": ["lodash", "lodash-compact", "lodash-fp"],
   "lodashPath": null,
   "output": null,
   "production": false,

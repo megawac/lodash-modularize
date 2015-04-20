@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var defaults = require('../src/defaults.json');
+var defaults = require('../defaults.json');
 var screenWidth = require('window-size').width;
 
 var argv = require('yargs')
@@ -80,10 +80,16 @@ var argv = require('yargs')
 require('bluebird').longStackTraces();
 var modularize = require('..');
 
-argv.lodashPath = argv.lodashPath || argv.lodash;
-
 // Work around yargs not doing it for us
-argv.format = argv.f = argv.f.join(',').split(',');
+if (typeof argv.f === 'string') {
+  argv.format = argv.f = argv.f.split(',');
+}
+
+if (!argv.lodashPath) {
+  argv.lodashPath = typeof argv.lodash === 'string' ?
+                    argv.lodash :
+                    argv.lodash[0];
+}
 
 modularize(argv._, argv)
   .then(function(result) {
