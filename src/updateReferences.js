@@ -3,6 +3,8 @@ import recast from 'recast';
 import path from 'path';
 import fs from 'fs';
 
+import Error from './Error';
+
 const builders = recast.types.builders;
 
 function replaceRequire(node, output) {
@@ -39,8 +41,13 @@ export const updaters = {
         path.replace(replaceRequire(node, output));
         break;
       }
+      // AMD
+      case 'Literal':
+        path.replace(builders.literal(output));
+        break;
       default:
-        throw `${node.type} commonjs imports are not currently supported (file an issue)`;
+        let msg = `${node.type} commonjs imports are not currently supported (file an issue)`;
+        throw new Error(msg, path);
     }
   }
 };
@@ -52,16 +59,14 @@ export default function updateReferences(code, source, nodes, {output}) {
   let ast = recast.parse(code);
 
   let visitors = transform(nodes, (memo, node) => {
-    let {type} = node.reference;
+    let {type} = node;
     let updater = updaters[node.type];
     memo[`visit${type}`] = function(path) {
       let node = path.value;
       let {start, end} = node.loc;
       // Find the corresponding import for this node
       let other = find(nodes, {
-        reference: {
-          type, loc: {start, end}
-        }
+        type, loc: {start, end}
       });
       if (other) {
         updater(path, node, output);
