@@ -47,6 +47,7 @@
       "expect"
     ]
   },
+  "preferGlobal": true,
   "dependencies": {
     "acorn": "^1.0.0",
     "acorn-umd": "^0.3.0",
@@ -59,7 +60,7 @@
     "lodash-cli": "3.6.0",
     "recast": "^0.10.11",
     "window-size": "^0.1.0",
-    "yargs": "^3.6.0"
+    "yargs": "^3.7.0"
   },
   "bin": "bin/lodash-modularize"
 }
