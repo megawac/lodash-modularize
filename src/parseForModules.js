@@ -120,7 +120,6 @@ export default function(code, path, options) {
     .compact()
     .tap(node => {
       let imports = flatten(node.map(node => map(node.imports, 0)));
-      console.log(imports);
       if (options.update && imports.length) {
         updateReferences(code, path, imports, options);
       }

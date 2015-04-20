@@ -41,7 +41,19 @@ var argv = require('yargs')
   .option('exports', {
     default: defaults.exports,
     alias: 'export',
-    describe: 'module format to export (es6,umd,cjs,amd)'
+    describe: 'module format to export (umd,es6,cjs,amd)'
+  })
+  .option('es6', {
+    describe: 'Set to es6 export',
+    type: 'boolean'
+  })
+  .option('amd', {
+    describe: 'Set to amd export',
+    type: 'boolean'
+  })
+  .option('cjs', {
+    describe: 'Set to cjs export',
+    type: 'boolean'
   })
 
   .option('lodash', {
@@ -90,6 +102,15 @@ if (!argv.lodashPath) {
                     argv.lodash :
                     argv.lodash[0];
 }
+
+if (argv.es6) {
+  argv.exports = 'es6';
+} else if (argv.amd) {
+  argv.exports = 'amd';
+} else if (argv.cjs) {
+  argv.exports = 'cjs';
+}
+argv.export = argv.exports;
 
 modularize(argv._, argv)
   .then(function(result) {
