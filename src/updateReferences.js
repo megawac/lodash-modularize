@@ -18,6 +18,10 @@ export const updaters = {
     path.replace(r);
   },
 
+  AMDImport(path, node, output) {
+    path.replace(builders.literal(output));
+  },
+
   CJSImport(path, node, output) {
     switch (node.type) {
       case 'VariableDeclaration': {
@@ -41,10 +45,6 @@ export const updaters = {
         path.replace(replaceRequire(node, output));
         break;
       }
-      // AMD
-      case 'Literal':
-        path.replace(builders.literal(output));
-        break;
       default:
         let msg = `${node.type} commonjs imports are not currently supported (file an issue)`;
         throw new Error(msg, path);
@@ -54,13 +54,13 @@ export const updaters = {
 
 // Update the import references from the source to point at the
 // new compiled file.
-export default function updateReferences(code, source, nodes, {output}) {
+export default function updateReferences(code, source, nodes, {output}, format) {
   output = path.relative(path.dirname(source), output);
   let ast = recast.parse(code);
-
+  console.log(format);
   let visitors = transform(nodes, (memo, node) => {
     let {type} = node;
-    let updater = updaters[node.type];
+    let updater = updaters[format || type];
     memo[`visit${type}`] = function(path) {
       let node = path.value;
       let {start, end} = node.loc;

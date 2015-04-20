@@ -113,15 +113,16 @@ export default function(code, path, options) {
       if (imports.length) {
         return {
           imports,
-          scope: define.scope
+          scope: define.scope,
+          type: define.type
         };
       }
     })
     .compact()
-    .tap(node => {
-      let imports = flatten(node.map(node => map(node.imports, 0)));
+    .tap(nodes => {
+      let imports = flatten(nodes.map(nodes => map(nodes.imports, 0)));
       if (options.update && imports.length) {
-        updateReferences(code, path, imports, options);
+        updateReferences(code, path, imports, options, nodes[0].type);
       }
     })
     .map(node => {

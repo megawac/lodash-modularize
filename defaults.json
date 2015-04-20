@@ -1,7 +1,7 @@
 {
   "compile": false,
   "exports": "umd",
-  "format": ["cjs", "es6", "format"],
+  "format": ["cjs", "es6", "amd"],
   "global": null,
   "list": false,
   "lodash": ["lodash", "lodash-compact", "lodash-fp"],
