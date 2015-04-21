@@ -1,6 +1,5 @@
 # lodash-modularize [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
 
-
 Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using browserify or r.js).
 
 # Example Usage
@@ -23,7 +22,7 @@ lodash-modularize src/** -o src/depends/lodash.js --format es6
 lodash-modularize src/** -o src/depends/lodash.js --global lodash --exports umd
 
 # Compile the code using lodash-cli!
-lodash-modularize src/** -o src/depends/lodash.js -f amd --compile
+lodash-modularize src/** -o src/depends/lodash.js --amd --compile
 
 # Update the projects using lodash to use the built depends/lodash instead
 lodash-modularize src/** -o depends/lodash.js --update
@@ -56,7 +55,7 @@ lodash.each(result, log);
 $ lodash-modularize app.js --list
 # => each, flatten, sortBy, uniq
 
-$ lodash-modularize ./test/sample.js --exports cjs -o lodash.js
+$ lodash-modularize ./test/sample.js --cjs -o lodash.js
 ```
 **lodash.js**
 ```js
@@ -79,8 +78,6 @@ lodash.uniq = uniq;
 And many other patterns including globals (opt-in), **chaining**, and mixins.
 
 # Notes
-
-Also **AMD** is not yet fully supported.
 
 Lazy chaining is not fully supported (it works but its not lazy).
 
