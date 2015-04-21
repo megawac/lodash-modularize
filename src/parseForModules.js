@@ -1,7 +1,7 @@
 import {parse} from 'acorn';
 import umd from 'acorn-umd';
 import estraverse from 'estraverse';
-import lodash, {compact, includes, reject} from 'lodash';
+import lodash, {compact, flatten, includes, map, reject} from 'lodash';
 
 import updateReferences from './updateReferences';
 import Error from './Error';
@@ -65,7 +65,7 @@ export default function(code, path, options) {
   let result = [];
 
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
-  let lodashOptions = compact([options.lodash, options.output]);
+  let lodashOptions = compact(flatten([options.lodash, options.output]));
 
   lodash(umd(ast, {
       amd: false,
@@ -86,7 +86,7 @@ export default function(code, path, options) {
     })
     .tap(nodes => {
       if (options.update && nodes.length) {
-        updateReferences(code, path, nodes, options);
+        updateReferences(code, path, map(nodes, 'reference'), options);
       }
     })
     .map(node => {
@@ -95,6 +95,41 @@ export default function(code, path, options) {
       return {
         imports: reject(node.specifiers, 'imported')
                   .map(x => x.local.name),
+        scope: node.scope.block
+      };
+    })
+    .each(node => {
+      result.push(...findModules(path, node));
+    }).value();
+
+  lodash(umd(ast, {
+      amd: includes(options.format, 'amd'),
+      cjs: false,
+      es6: false
+    }))
+    .map(define => {
+      let imports = define.imports.filter(specifier =>
+          includes(lodashOptions, specifier[0].value));
+      if (imports.length) {
+        return {
+          imports,
+          scope: define.scope,
+          type: define.type
+        };
+      }
+    })
+    .compact()
+    .tap(nodes => {
+      let imports = flatten(nodes.map(nodes => map(nodes.imports, 0)));
+      if (options.update && imports.length) {
+        updateReferences(code, path, imports, options, nodes[0].type);
+      }
+    })
+    .map(node => {
+      // filter the specifiers down to the direct imports
+      // (handles `import x,{y,z} from 'foo';)
+      return {
+        imports: node.imports.map(zip => zip[1].name),
         scope: node.scope.block
       };
     })

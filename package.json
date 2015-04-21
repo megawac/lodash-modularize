@@ -47,6 +47,7 @@
       "expect"
     ]
   },
+  "preferGlobal": true,
   "dependencies": {
     "acorn": "^1.0.0",
     "acorn-umd": "^0.3.0",
@@ -55,11 +56,11 @@
     "esperanto": "^0.6.25",
     "estraverse": "^3.1.0",
     "glob": "^5.0.3",
-    "lodash": "^3.6.0",
-    "lodash-cli": "3.6.0",
+    "lodash": "^3.7.0",
+    "lodash-cli": "3.7.0",
     "recast": "^0.10.11",
     "window-size": "^0.1.0",
-    "yargs": "^3.6.0"
+    "yargs": "^3.7.0"
   },
   "bin": "bin/lodash-modularize"
 }

@@ -1,10 +1,10 @@
 {
   "compile": false,
   "exports": "umd",
-  "format": ["cjs", "es6"],
+  "format": ["cjs", "es6", "amd"],
   "global": null,
   "list": false,
-  "lodash": "lodash",
+  "lodash": ["lodash", "lodash-compact", "lodash-fp"],
   "lodashPath": null,
   "output": null,
   "production": false,

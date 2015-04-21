@@ -1,7 +1,7 @@
 import esperanto from 'esperanto';
 import fs from 'fs';
 import path from 'path';
-import lodash, {includes, template} from 'lodash';
+import lodash, {includes, result, template} from 'lodash';
 
 import chainableMethods from './lodash-chainable';
 
@@ -11,7 +11,7 @@ const normalTemplate = template(fs.readFileSync(buildPath));
 const chainTemplate = template(fs.readFileSync(chainPath));
 
 export default function build(methods, modules, options) {
-  let _path = options.lodashPath;
+  let _path = result(options, 'lodashPath', '');
   let {ext, dir, name, base} = path.parse(_path);
   // Don't rel a cjs import
   if (options.output != null &&
