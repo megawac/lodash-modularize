@@ -25,7 +25,7 @@ mixin(_, {
 
 mixin(_, {
   <%= _(config).reject('chained').map('propString').join(',\n  ') %>
-}, true);
+}, false);
 
 <% _.each(chainMethods, function(method) { %>
 _.prototype.<%= method.name %> = __<%= method.name %>__;
