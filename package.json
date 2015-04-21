@@ -1,6 +1,6 @@
 {
   "name": "lodash-modularize",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generate modular lodash builds for exactly what you use",
   "main": "dist/lodash-modularize.js",
   "scripts": {
