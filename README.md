@@ -2,7 +2,16 @@
 
 Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using browserify or r.js).
 
-# Example Usage
+### Features
+
+- Detect lodash methods/modules being used in source code
+- Compile a perfect [custom lodash build using the cli](https://lodash.com/custom-builds)
+- Compile a custom modular `lodash.js` which imports the exact modules you use
+- Update references (e.g.) `require('lodash')` to `require('./src/custom-lodash'`
+- Supports AMD, CJS, ES6 and UMD
+- Other sweetness (see below and try `lodash-modularize --help`)
+
+### Example Usage
 
 All examples are taken from this project
 
@@ -28,7 +37,7 @@ lodash-modularize src/** -o src/depends/lodash.js --amd --compile
 lodash-modularize src/** -o depends/lodash.js --update
 ```
 
-Or as a `package.json` script
+Or as a `package.json` script (for instance, creating a modular build on publish)
 
 ```js
 {
@@ -39,7 +48,7 @@ Or as a `package.json` script
 }
 ```
 
-# So what can it detect
+### So what can it detect
 
 **app.js**
 ```js
@@ -77,7 +86,7 @@ lodash.uniq = uniq;
 
 And many other patterns including globals (opt-in), **chaining**, and mixins.
 
-# Notes
+## Notes
 
 Lazy chaining is not fully supported (it works but its not lazy).
 
