@@ -11,7 +11,7 @@ const exportMap = {
 export default function build(methods, options) {
   let opts = [
     // Detect the build type
-    /compat/i.test(options.lodash) ? 'compat' : 'modern',
+    /compat/i.test(options.lodashPath) ? 'compat' : 'modern',
     // Requested the required methods
     `include=${methods.join(',')}`,
     options.production ? '--production' : '--development',
