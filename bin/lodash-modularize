@@ -66,6 +66,12 @@ var argv = require('yargs')
     describe: 'Lodash base path (useful for AMD)'
   })
 
+  .option('use-npm-modules', {
+    describe: 'Whether to use (smaller) npm lodash modules (see docs)',
+    type: 'boolean',
+    alias: ['n']
+  })
+
   .option('global', {
     default: defaults.global,
     alias: 'g',

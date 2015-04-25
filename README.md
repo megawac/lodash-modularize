@@ -1,6 +1,6 @@
 # lodash-modularize [![Dependency Status](https://david-dm.org/megawac/lodash-modularize.svg)](https://david-dm.org/megawac/lodash-modularize)
 
-Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using browserify or r.js).
+Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using `compile`, `browserify`, `r.js`, etc).
 
 ### Features
 
@@ -9,6 +9,7 @@ Lodash is starting to get pretty heafty; this is a tool to generate modular loda
 - Compile a custom modular `lodash.js` which imports the exact modules you use
 - Update references (e.g.) `require('lodash')` to `require('./src/custom-lodash'`
 - Supports AMD, CJS, ES6 and UMD
+- Natural recompilation: if you decide to output a build the tool supports simply recompiling the build if you decide to add/remove methods in the source.
 - Other sweetness (see below and try `lodash-modularize --help`)
 
 ### Example Usage
