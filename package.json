@@ -56,8 +56,10 @@
     "esperanto": "^0.6.25",
     "estraverse": "^4.1.0",
     "glob": "^5.0.3",
+    "inquirer": "^0.8.2",
     "lodash": "^3.7.0",
     "lodash-cli": "^3.7.0",
+    "npm": "^2.5.1",
     "recast": "^0.10.11",
     "window-size": "^0.1.0",
     "yargs": "^3.7.0"

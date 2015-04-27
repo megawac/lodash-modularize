@@ -38,13 +38,20 @@ export default function modularize(fileGlob, options) {
       } else {
         code = esperantoBuild(methods, modules, options).code;
       }
-      let $code = Promise.resolve(code);
+      let $code = Promise.resolve(code)
+          .then($code => {
+            code = String($code);
+            return code;
+          });
       if (options.output) {
-        return $code
-          .then(code => fs.writeFileAsync(options.output, code))
-          .then(() => $code);
+        $code = $code.then(code => fs.writeFileAsync(options.output, code));
       }
-      return $code;
+      return $code.then(() => {
+        return {
+          code,
+          methods
+        };
+      });
     });
 }
 

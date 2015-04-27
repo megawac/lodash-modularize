@@ -97,6 +97,8 @@ var argv = require('yargs')
 // I want it all
 require('bluebird').longStackTraces();
 var modularize = require('..');
+var inquirer = require('inquirer');
+var npm = require('npm').load();
 
 // Work around yargs not doing it for us
 if (typeof argv.f === 'string') {
@@ -122,9 +124,19 @@ modularize(argv._, argv)
   .then(function(result) {
     if (argv.list) {
       console.log(result.join(',').bold);
-      return;
     } else if (!argv.output) {
-      console.log(result);
+      console.log(result.code);
+    } else if (argv.useNpmModules && !argv.installNpmModules) {
+      inquirer.prompt([{
+        type: "confirm",
+        message: "Install the appropriate npm modules now?",
+        name: "install",
+        default: false
+      }], function(opts) {
+        if (opts.install) {
+          npm.install(result.methods)
+        }
+      });
     }
   })
   .catch(function(error) {
