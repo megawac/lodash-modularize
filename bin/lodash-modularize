@@ -165,4 +165,3 @@ modularize(argv._, argv)
     setTimeout(process.exit, 100, 1);
     throw error;
   });
-
