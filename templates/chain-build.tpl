@@ -3,11 +3,16 @@ import LodashWrapper from '<%= lodashPath %>/internal/LodashWrapper';
 
 import create from '<%= lodashPath %>/object/create';
 import mixin from '<%= lodashPath %>/utility/mixin';
-
-<% _.each(config, function(method) { %>
-import <%= method.name %> from '<%= method.path %>';<% }); %>
-
-<% _.each(chainMethods, function(method) { %>
+<%
+// Remove imported modules to prevent err
+_(config)
+ .reject(_.partial(_.contains, ['create', 'mixin']))
+ .each(function(method) { 
+%>
+import <%= method.name %> from '<%= method.path %>';<% }).value(); %>
+<%
+_.each(chainMethods, function(method) {
+%>
 import __<%= method.name %>__ from '<%= method.path %>';<% }); %>
 
 function _(value) {
@@ -28,6 +33,6 @@ mixin(_, {
 }, false);
 
 <% _.each(chainMethods, function(method) { %>
-_.prototype.<%= method.name %> = __<%= method.name %>__;
-<% }); %>
+_.prototype.<%= method.name %> = __<%= method.name %>__;<% }); %>
+
 export default _;
