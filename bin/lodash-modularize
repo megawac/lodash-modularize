@@ -71,6 +71,7 @@ var argv = require('yargs')
     type: 'boolean',
     alias: ['n']
   })
+  .implies('use-npm-modules', 'output')
 
   .option('global', {
     default: defaults.global,
@@ -98,7 +99,6 @@ var argv = require('yargs')
 require('bluebird').longStackTraces();
 var modularize = require('..');
 var inquirer = require('inquirer');
-var npm = require('npm').load();
 
 // Work around yargs not doing it for us
 if (typeof argv.f === 'string') {
@@ -126,7 +126,20 @@ modularize(argv._, argv)
       console.log(result.join(',').bold);
     } else if (!argv.output) {
       console.log(result.code);
-    } else if (argv.useNpmModules && !argv.installNpmModules) {
+    } else if (argv.useNpmModules) {
+      function save() {
+        require('npm').load(function(cfg, npm) {
+          var methods = result.methods.map(function(method) {
+            return 'lodash.' + method.toLowerCase();
+          });
+          console.log(methods);
+          npm.install(methods);
+        });
+      }
+
+      if (argv.installNpmModules) {
+        return save();
+      }
       inquirer.prompt([{
         type: "confirm",
         message: "Install the appropriate npm modules now?",
@@ -134,7 +147,7 @@ modularize(argv._, argv)
         default: false
       }], function(opts) {
         if (opts.install) {
-          npm.install(result.methods)
+          save();
         }
       });
     }
