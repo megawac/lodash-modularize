@@ -73,6 +73,10 @@ var argv = require('yargs')
   })
   .implies('use-npm-modules', 'output')
 
+  .option('install-npm-modules', {
+    type: 'boolean'
+  })
+
   .option('global', {
     default: defaults.global,
     alias: 'g',
@@ -99,6 +103,7 @@ var argv = require('yargs')
 require('bluebird').longStackTraces();
 var modularize = require('..');
 var inquirer = require('inquirer');
+var _ = require('lodash');
 
 // Work around yargs not doing it for us
 if (typeof argv.f === 'string') {
@@ -128,12 +133,15 @@ modularize(argv._, argv)
       console.log(result.code);
     } else if (argv.useNpmModules) {
       function save() {
+        var mappings = require('lodash-cli/lib/mapping');
         require('npm').load(function(cfg, npm) {
+          console.log(result);
           var methods = result.methods.map(function(method) {
+            method = _.result(mappings.aliasToReal, method, method);
             return 'lodash.' + method.toLowerCase();
           });
           console.log(methods);
-          npm.install(methods);
+          // npm.install(methods);
         });
       }
 

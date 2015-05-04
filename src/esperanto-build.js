@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import lodash, {includes, result, template} from 'lodash';
 
+import {aliasToReal} from 'lodash-cli/lib/mapping';
+
 import chainableMethods from './lodash-chainable';
 
 const buildPath = path.join(__dirname, '../templates/import-build.tpl');
@@ -28,12 +30,13 @@ export default function build(methods, modules, options) {
           break;
         }
       }
+      let realName = result(aliasToReal, name, name);
       return {
         name,
         propString: `${name}: ${name}`,
         path: options.useNpmModules ?
           `lodash.${name.toLowerCase()}` :
-          path.join(_path, category, name),
+          path.join(_path, category, realName),
         chained: chainableMethods[name]
       };
     })
