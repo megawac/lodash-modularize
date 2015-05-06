@@ -35,7 +35,7 @@ export default function build(methods, modules, options) {
         name,
         propString: `${name}: ${name}`,
         path: options.useNpmModules ?
-          `lodash.${name.toLowerCase()}` :
+          `lodash.${realName.toLowerCase()}` :
           path.join(_path, category, realName),
         chained: chainableMethods[name]
       };
