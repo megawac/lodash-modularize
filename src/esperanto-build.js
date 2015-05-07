@@ -15,11 +15,17 @@ const chainTemplate = template(fs.readFileSync(chainPath));
 export default function build(methods, modules, options) {
   let _path = result(options, 'lodashPath') || '';
   let {ext, dir, name, base} = path.parse(_path);
+  let chainBuild = includes(methods, 'chain');
+
   // Don't rel a cjs import
   if (options.output != null &&
     (ext !== '' || dir !== '' || name !== base)
   ) {
     _path = path.relative(path.dirname(options.output), _path);
+  }
+
+  if (options.useNpmModules && chainBuild) {
+    throw new Error('Cannot currently use npm modules with a library using chaining');
   }
 
   // Otherwise compile a file for them to the modularization
@@ -43,7 +49,7 @@ export default function build(methods, modules, options) {
     .partition(node => /\/chain\//.test(node.path))
     .value();
 
-  let template = includes(methods, 'chain') ? chainTemplate : normalTemplate;
+  let template = chainBuild ? chainTemplate : normalTemplate;
   let code = template({
     config: config[1],
     chainMethods: config[0],
