@@ -8,7 +8,7 @@ function getDirectories(srcpath) {
         fs.statAsync(path.join(srcpath, file)).then(stat => stat.isDirectory()));
 }
 
-let lodashPath = './node_modules/lodash';
+let lodashPath = path.join(__dirname, '../node_modules/lodash');
 let m;
 
 export default getDirectories(lodashPath).then(modules => {
