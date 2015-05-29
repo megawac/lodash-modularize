@@ -86,7 +86,7 @@ export default function(code, path, options) {
     })
     .tap(nodes => {
       if (options.update && nodes.length) {
-        updateReferences(code, path, map(nodes, 'reference'), options);
+        updateReferences(code, path, nodes, options);
       }
     })
     .map(node => {

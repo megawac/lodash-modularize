@@ -47,26 +47,28 @@ export const updaters = {
       }
       default:
         let msg = `${node.type} commonjs imports are not currently supported (file an issue)`;
-        throw new Error(msg, path);
+        throw new Error(msg, output);
     }
   }
 };
 
 // Update the import references from the source to point at the
 // new compiled file.
-export default function updateReferences(code, source, nodes, {output}, format) {
+export default function updateReferences(code, source, nodes, {output}) {
   output = path.relative(path.dirname(source), output);
   let ast = recast.parse(code);
-  console.log(format);
-  let visitors = transform(nodes, (memo, node) => {
+  let visitors = transform(nodes, (memo, nodeWrapper) => {
+    let {type: format, reference: node} = nodeWrapper;
     let {type} = node;
-    let updater = updaters[format || type];
+    let updater = updaters[format];
     memo[`visit${type}`] = function(path) {
       let node = path.value;
       let {start, end} = node.loc;
       // Find the corresponding import for this node
       let other = find(nodes, {
-        type, loc: {start, end}
+        reference: {
+          type, loc: {start, end}
+        }
       });
       if (other) {
         updater(path, node, output);
