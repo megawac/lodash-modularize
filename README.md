@@ -2,6 +2,10 @@
 
 Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using `compile`, `browserify`, `r.js`, etc).
 
+## Whats in the Box
+
+<youtube>
+
 ### Features
 
 - Detect lodash methods/modules being used in source code
@@ -38,13 +42,15 @@ lodash-modularize src/** -o src/depends/lodash.js --amd --compile
 lodash-modularize src/** -o depends/lodash.js --update
 ```
 
-Or as a `package.json` script (for instance, creating a modular build on publish)
+##### Fancy `package.json` script
+
+Use this tool to easily use [lodash npm modules](https://www.npmjs.com/browse/keyword/lodash-modularized) and avoid installing the entire lodash package (set `lodash` as a dev dep)!
 
 ```js
 {
-    "dependencies": {"lodash": "^3.0", "lodash-modularize": "^1.0"},
+    "devDependencies": {"lodash": "^3.0", "lodash-modularize": "^1.0"},
     "scripts": {
-        "prepublish": "lodash-modularize src/**.js -o src/depends/lodash.js -u"
+        "prepublish": "lodash-modularize src/**.js -o src/depends/lodash.js -u --use-npm-modules --install-npm-modles"
     }
 }
 ```

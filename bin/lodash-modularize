@@ -76,6 +76,7 @@ var argv = require('yargs')
   .option('install-npm-modules', {
     type: 'boolean'
   })
+  .implies('install-npm-modules', 'use-npm-modules')
 
   .option('global', {
     default: defaults.global,
