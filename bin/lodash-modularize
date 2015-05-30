@@ -76,7 +76,6 @@ var argv = require('yargs')
   .option('install-npm-modules', {
     type: 'boolean'
   })
-  .implies('install-npm-modules', 'use-npm-modules')
 
   .option('global', {
     default: defaults.global,
@@ -126,6 +125,8 @@ if (argv.es6) {
   argv.exports = 'cjs';
 }
 argv.export = argv.exports;
+
+argv.useNpmModules = argv.useNpmModules || argv.installNpmModules;
 
 modularize(argv._, argv)
   .then(function(result) {
