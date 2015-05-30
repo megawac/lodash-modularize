@@ -1,4 +1,4 @@
-import {find, transform} from 'lodash';
+import {find, startsWith, transform} from 'lodash';
 import recast from 'recast';
 import path from 'path';
 import fs from 'fs';
@@ -63,6 +63,9 @@ export const updaters = {
 // new compiled file.
 export default function updateReferences(code, source, nodes, {output}) {
   output = path.relative(path.dirname(source), output);
+  // Ensure requires work
+  output = startsWith(output, path.normalize('../')) ? output : './' + output;
+
   let ast = recast.parse(code);
   let visitors = transform(nodes, (memo, nodeWrapper) => {
     let {type: format, reference: node} = nodeWrapper;

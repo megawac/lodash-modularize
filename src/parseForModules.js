@@ -2,6 +2,7 @@ import {parse} from 'acorn';
 import umd from 'acorn-umd';
 import estraverse from 'estraverse';
 import lodash, {compact, flatten, includes, map, reject} from 'lodash';
+import {dirname, normalize, relative} from 'path';
 
 import updateReferences from './updateReferences';
 import Error from './Error';
@@ -16,6 +17,10 @@ const acornOptions = {
   allowReturnOutsideFunction: true,
   allowHashBang: true
 };
+
+function matchesPath(valids, path) {
+  return includes(valids, path) || includes(valids, normalize(path));
+}
 
 export function findModules(path, {imports, scope}) {
   let result = [];
@@ -65,7 +70,8 @@ export default function(code, path, options) {
   let result = [];
 
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
-  let lodashOptions = compact(flatten([options.lodash, options.output]));
+  let lodashOptions = compact(flatten([options.lodash, normalize,
+                        relative(dirname(path), options.output)]));
 
   lodash(umd(ast, {
       amd: false,
@@ -74,7 +80,7 @@ export default function(code, path, options) {
     }))
     .filter(node => {
       // consider adding lodash-fp & others
-      return includes(lodashOptions, node.source.value);
+      return matchesPath(lodashOptions, node.source.value);
     })
     .each(node => {
       // Add direct specifiers (`import {map, pick} from 'lodash'`)
@@ -109,7 +115,7 @@ export default function(code, path, options) {
     }))
     .map(define => {
       let imports = define.imports.filter(specifier =>
-          includes(lodashOptions, specifier[0].value));
+          matchesPath(lodashOptions, specifier[0].value));
       if (imports.length) {
         return {
           imports,
