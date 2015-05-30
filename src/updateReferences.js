@@ -24,6 +24,13 @@ export const updaters = {
 
   CJSImport(path, node, output) {
     switch (node.type) {
+      case 'VariableDeclarator': {
+        let {id, init} = node;
+        path.replace(builders.variableDeclarator(id,
+                        replaceRequire(init, output)));
+        break;
+      }
+      // Annoyingly redundant
       case 'VariableDeclaration': {
         let {id, init} = node.declarations[0];
 
