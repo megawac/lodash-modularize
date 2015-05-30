@@ -4,7 +4,9 @@ Lodash is starting to get pretty heafty; this is a tool to generate modular loda
 
 ## Whats in the Box
 
-<youtube>
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=o9GrUNAqwNY
+" target="_blank"><img src="http://img.youtube.com/vi/o9GrUNAqwNY/0.jpg"
+alt="IMAGE ALT TEXT HERE" width="300" height="180" border="10" /></a>
 
 ### Features
 
