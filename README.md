@@ -16,6 +16,7 @@ alt="IMAGE ALT TEXT HERE" width="300" height="180" border="10" /></a>
 - Update references (e.g.) `require('lodash')` to `require('./src/custom-lodash'`
 - Supports AMD, CJS, ES6 and UMD
 - Natural recompilation: if you decide to output a build the tool supports simply recompiling the build if you decide to add/remove methods in the source.
+- Supports using [lodash npm modules](https://www.npmjs.com/browse/keyword/lodash-modularized)
 - Other sweetness (see below and try `lodash-modularize --help`)
 
 ### Example Usage
