@@ -69,9 +69,10 @@ export default function(code, path, options) {
 
   let result = [];
 
+  let outputFile = options.output && relative(dirname(path), options.output);
+
   // imports to consider lodash (e.g. lodash-compact, lodash, etc)
-  let lodashOptions = compact(flatten([options.lodash, normalize,
-                        relative(dirname(path), options.output)]));
+  let lodashOptions = compact(flatten([options.lodash, normalize, outputFile]));
 
   lodash(umd(ast, {
       amd: false,
