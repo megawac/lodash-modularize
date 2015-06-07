@@ -1,4 +1,4 @@
-import modularize from '../../src/lodash-modularize';
+ import modularize from '../../src/lodash-modularize';
 import path from 'path';
 // import fs from 'fs';
 import {parse} from 'acorn';
@@ -54,59 +54,38 @@ describe('Listing support', () => {
 describe('Basic transform produces valid JS', () => {
   it('on ES6 modules', (done) => {
     modularize(filePath('es6.js'), {exports: 'es6'})
-    .then(code => {
+    .then(({code}) => {
       let ast = parse(code, {ecmaVersion: 6, sourceType: 'module'});
       let modules = umd(ast, {es6: true, amd: false, cjs: false});
       expect(modules).to.have.length(4);
-      done();
-    });
+    })
+    .then(done, done);
   });
 
   it('on CJS modules', (done) => {
     modularize(filePath('cjs.js'))
-    .then(code => {
+    .then(({code}) => {
       let ast = parse(code, {ecmaVersion: 6, sourceType: 'module'});
       let modules = umd(ast, {es6: false, amd: false, cjs: true});
       expect(modules).to.have.length(4);
       modules = umd(ast, {es6: false, amd: true, cjs: false});
-      expect(modules).to.have.length(1);
-      done();
-    });
+      expect(modules).to.have.length(0);
+    })
+    .then(done, done);
   });
 
   it('on chaining', (done) => {
     modularize(filePath('chaining.js'))
-    .then(code => {
+    .then(({code}) => {
       let ast = parse(code, {ecmaVersion: 6, sourceType: 'module'});
       let modules = umd(ast, {es6: false, amd: false, cjs: true});
-      expect(modules).to.have.length(15);
-      done();
-    });
+      expect(modules).to.have.length(14);
+      modules = umd(ast, {es6: true, amd: true, cjs: true});
+      expect(modules).to.have.length(14);
+      modules = umd(ast, {es6: true, amd: true, cjs: false});
+      expect(modules).to.have.length(0);
+    })
+    .then(done, done);
   });
 });
 
-// describe('Compiling transform produces valid JS', () => {
-//   it('on ES6 modules', (done) => {
-//     modularize(filePath('es6.js'), {compile: true})
-//     .then(code => {
-//       parse(code);
-//       done();
-//     });
-//   });
-
-//   it('on CJS modules', (done) => {
-//     modularize(filePath('cjs.js'), {compile: true})
-//     .then(code => {
-//       parse(code);
-//       done();
-//     });
-//   });
-
-//   it('on chaining', (done) => {
-//     modularize(filePath('chaining.js'), {compile: true})
-//     .then(code => {
-//       parse(code);
-//       done();
-//     });
-//   });
-// });
