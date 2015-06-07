@@ -89,3 +89,15 @@ describe('Basic transform produces valid JS', () => {
   });
 });
 
+describe('Lodash CLI compile', () => {
+  it('on ES6 modules', function(done) {
+    this.timeout(5000);
+    modularize(filePath('es6.js'), {compile: true})
+    .then(({code}) => {
+      let ast = parse(code, {ecmaVersion: 6, sourceType: 'module'});
+      let modules = umd(ast, {es6: true, amd: true, cjs: true});
+      expect(modules).to.have.length(0);
+    })
+    .then(done, done);
+  });
+});
