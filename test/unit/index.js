@@ -89,6 +89,20 @@ describe('Basic transform produces valid JS', () => {
   });
 });
 
+describe('Output', () => {
+  it('on ES6 modules', (done) => {
+    modularize(filePath('es6.js'), {
+      exports: 'es6',
+      output: path.join(__dirname, '../tmp/es6-lodash.js')
+    })
+    .then(() => {
+      const _ = require('../tmp/es6-lodash');
+      expect(_).to.have.keys(['each', 'flatten', 'sortBy', 'uniq']);
+    })
+    .then(done, done);
+  });
+});
+
 describe('Lodash CLI compile', () => {
   it('on ES6 modules', function(done) {
     this.timeout(5000);

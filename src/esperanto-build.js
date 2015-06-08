@@ -1,7 +1,7 @@
 import esperanto from 'esperanto';
 import fs from 'fs';
 import path from 'path';
-import lodash, {includes, result, template} from 'lodash';
+import lodash, {first, includes, result, template} from 'lodash';
 
 import {aliasToReal} from 'lodash-cli/lib/mapping';
 
@@ -13,15 +13,19 @@ const normalTemplate = template(fs.readFileSync(buildPath));
 const chainTemplate = template(fs.readFileSync(chainPath));
 
 export default function build(methods, modules, options) {
-  let _path = result(options, 'lodashPath') || '';
-  let {ext, dir, name, base} = path.parse(_path);
   let chainBuild = includes(methods, 'chain');
 
-  // Don't rel a cjs import
-  if (options.output != null &&
-    (ext !== '' || dir !== '' || name !== base)
-  ) {
-    _path = path.relative(path.dirname(options.output), _path);
+  let _path = result(options, 'lodashPath');
+  if (_path) {
+    let {ext, dir, name, base} = path.parse(_path);
+    // Don't rel a cjs import
+    if (options.output != null &&
+      (ext !== '' || dir !== '' || name !== base)
+    ) {
+      _path = path.relative(path.dirname(options.output), _path);
+    }
+  } else {
+    _path = first(options.lodash);
   }
 
   if (options.useNpmModules && chainBuild) {
