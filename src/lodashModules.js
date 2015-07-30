@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import path from 'path';
 import {zipObject} from 'lodash';
-import fs from 'fs';
+import fs from './fs';
 
 function getDirectories(srcpath) {
   return fs.readdirAsync(srcpath).filter(file =>

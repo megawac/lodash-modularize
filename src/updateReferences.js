@@ -1,7 +1,7 @@
 import {find, startsWith, transform} from 'lodash';
 import recast from 'recast';
 import path from 'path';
-import fs from 'fs';
+import fs from './fs';
 
 import Error from './Error';
 
