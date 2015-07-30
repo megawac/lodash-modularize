@@ -1,7 +1,7 @@
 import {parse} from 'acorn';
 import umd from 'acorn-umd';
 import estraverse from 'estraverse';
-import lodash, {compact, flatten, includes, map, reject} from 'lodash';
+import lodash, {compact, flatten, includes, map, noop, reject} from 'lodash';
 import {dirname, normalize, relative} from 'path';
 
 import updateReferences from './updateReferences';
@@ -61,12 +61,7 @@ export function findModules(path, {imports, scope}) {
   return result;
 }
 
-export default function(code, path, options) {
-  let ast = parse(code, lodash.assign({
-    ranges: true,
-    locations: true
-  }, acornOptions, lodash.result(options, 'acorn')));
-
+export function parseAst(ast, path, options) {
   let result = [];
 
   let outputFile = options.output && relative(dirname(path), options.output);
@@ -91,11 +86,7 @@ export default function(code, path, options) {
           result.push(requireNode.name);
         }).value();
     })
-    .tap(nodes => {
-      if (options.update && nodes.length) {
-        updateReferences(code, path, nodes, options);
-      }
-    })
+    .tap(options.processImports || noop)
     .map(node => {
       // filter the specifiers down to the direct imports
       // (handles `import x,{y,z} from 'foo';)
@@ -126,12 +117,7 @@ export default function(code, path, options) {
       }
     })
     .compact()
-    .tap(nodes => {
-      let imports = flatten(nodes.map(nodes => map(nodes.imports, 0)));
-      if (options.update && imports.length) {
-        updateReferences(code, path, imports, options, nodes[0].type);
-      }
-    })
+    .tap(options.processAMDImports || noop)
     .map(node => {
       // filter the specifiers down to the direct imports
       // (handles `import x,{y,z} from 'foo';)
@@ -152,4 +138,26 @@ export default function(code, path, options) {
   }
 
   return result;
+}
+
+export default function processFile(code, path, options) {
+  let ast = parse(code, lodash.assign({
+    ranges: true,
+    locations: true
+  }, acornOptions, lodash.result(options, 'acorn')));
+
+  options.processImports = nodes => {
+    if (options.update && nodes.length) {
+      updateReferences(code, path, nodes, options);
+    }
+  };
+
+  options.processAMDImports = nodes => {
+    let imports = flatten(nodes.map(nodes => map(nodes.imports, 0)));
+    if (options.update && imports.length) {
+      updateReferences(code, path, imports, options, nodes[0].type);
+    }
+  };
+
+  return parseAst(ast, path, options);
 }
