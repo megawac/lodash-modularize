@@ -2,6 +2,8 @@
 
 Lodash is starting to get pretty heafty; this is a tool to generate modular lodash builds so lodash only includes what you use. This can lead to faster startup and smaller builds (when using `compile`, `browserify`, `r.js`, etc).
 
+If you're using `babel` checkout [`babel-plugin-lodash`](https://github.com/megawac/babel-plugin-lodash) for a different approach.
+
 ## Whats in the Box
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=o9GrUNAqwNY
